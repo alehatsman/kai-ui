@@ -1,6 +1,6 @@
 # kai-ui — spec
 
-Status: v0.1 core + v0.2 more implemented (branches feat/v0.1-core, feat/v0.2-more). Date: 2026-10-21.
+Status: v0.1 core, v0.2 more, v0.3 content implemented, on main. Date: 2026-10-22.
 
 ## 1. Goal
 
@@ -174,9 +174,31 @@ v0.2 edge cases:
 - Pagination renders nothing for `last <= 1`.
 - Avatar `src` that fails to load: shows initials (onerror swaps in the fallback).
 
-### Later — decide after v0.2
+### v0.3 content — markdown + code
 
-Markdown body CSS, code-highlight block, xterm ANSI theme derived from tokens
+kai-ui styles rendered content; it never parses markdown or tokenises code.
+The app keeps its renderer (react-markdown, marked, lowlight; kai-ui adds
+no deps) and puts kai-ui classes on the output.
+
+| Piece | Block | Interface | Notes |
+|---|---|---|---|
+| Markdown body | `markdown-body` | CSS only: wrap rendered HTML in `<div class="markdown-body">` | GitHub-style headings, lists, tables, blockquote, hr, img, inline `code`, fenced `pre`. Element selectors under one block class — renderer output carries no classes |
+| Code block | `code-block` | CSS only: `<pre class="code-block"><code>…</code></pre>` | fenced code outside markdown; scrolls, never wraps |
+| Syntax colours | `hljs-*` | CSS only | highlight.js / lowlight scope classes → `--hl-*` tokens. Diff add/del → `--tone-success/-danger(-bg)`. Colour only, inherits the surface |
+| CodeSnippet | `code-snippet` + `code-line` | `lines, startLine = 1, focus?: [from, to]` | line-numbered, read-only. React `lines: ReactNode[]` (highlighted runs); Svelte `lines: string[]` + optional `line` snippet `(text, n)`. Focus range = accent tint + gutter bar. Number via `data-line` + `::before` so copy skips it |
+
+v0.3 edge cases:
+- Trailing newline in source: the caller drops it; CodeSnippet renders one row per entry, an empty entry still gets a row (height holds).
+- Long lines: `code-snippet` and `code-block` scroll horizontally; `markdown-body` tables scroll in place, never widen the page.
+- Inline `code` inside `pre` gets no fill: `pre code` resets it.
+- Monokai: `--code-bg` equals `--bg`, so `code-block` keeps its border to stay visible.
+- In a flex or grid parent, a long fenced line would set `markdown-body`'s
+  minimum width and push it past the parent: the block sets `min-width: 0`.
+- hljs compound classes (`.hljs-title.class_`): the trailing-underscore class is not BEM, so it is matched as `[class~="class_"]`, which ui-lint does not read as a class selector.
+
+### Later — decide after v0.3
+
+xterm ANSI theme derived from tokens
 (teleport), CheckDropdown, icon set (Octicon-style inline SVG), Sidebar /
 DetailLayout.
 
@@ -295,6 +317,21 @@ might collide.
   darker than the page in GitHub dark and vanish in GitHub light.
 - Menu item labels: `MenuItem<L>` in the contract — `ReactNode` in React,
   string in Svelte (tsc cannot read type exports from `.svelte`).
+
+### v0.3 as built
+
+- CSS: `markdown.css`, `code.css`, `hljs.css`. Binding: CodeSnippet (React
+  `lines: ReactNode[]`, Svelte `lines: string[]` + `line` snippet). Contract:
+  `LineRange`, `inRange()`.
+- Gallery: section "Markdown · Code", 4 demos. Markdown and highlighted
+  code arrive as renderer-shaped HTML from `gallery/content.ts`, so the three
+  columns are fed what an app would feed them.
+- Tests: unit +1 (inRange); e2e +9 (`content.spec.ts`: gutter from
+  startLine via `::before`, focus rows, `--hl-*` colours, empty-line height,
+  inline vs fenced code fill, markdown stays inside a flex cell).
+- Found while building: markdown in a flex cell overflowed into the next
+  column (fenced line set the min-content width). Fixed in the block
+  (`min-width: 0`); the e2e fails without it.
 
 ## 12. Open questions
 

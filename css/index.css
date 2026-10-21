@@ -24,3 +24,6 @@
 @import "./blocks/toolbar.css";
 @import "./blocks/chip.css";
 @import "./blocks/avatar.css";
+@import "./blocks/markdown.css";
+@import "./blocks/code.css";
+@import "./blocks/hljs.css";

@@ -143,4 +143,14 @@ export const SECTIONS: Section[] = [
       { id: "banner-dismiss", label: "dismissible banner" },
     ],
   },
+  {
+    id: "content",
+    title: "Markdown · Code",
+    demos: [
+      { id: "markdown", label: "rendered markdown with a fenced block" },
+      { id: "code-block", label: "code block, highlighted" },
+      { id: "code-snippet", label: "line numbers from 41, focus 43–44" },
+      { id: "code-snippet-hl", label: "highlighted runs per line" },
+    ],
+  },
 ]

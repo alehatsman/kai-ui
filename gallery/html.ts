@@ -2,6 +2,7 @@
 // needs JS to look right, it shows here first.
 
 import { pageList } from "../contract/index.ts"
+import { CODE_BLOCK_HTML, HL_LINES, MARKDOWN_HTML, runsHtml, SNIPPET_LINES } from "./content.ts"
 
 const TONES = ["neutral", "accent", "success", "warning", "danger", "done"] as const
 const mod = (block: string, tone: string) =>
@@ -23,6 +24,17 @@ const pages = pageList(5, 12)
     p === null ? `<span class="pagination__gap" aria-hidden="true">…</span>` : pageButton(p)
   )
   .join("")
+
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+
+const snippet = (lines: readonly string[], start: number, focus?: [number, number]) =>
+  `<div class="code-snippet"><table class="code-snippet__table"><tbody>${lines
+    .map((text, i) => {
+      const n = start + i
+      const cls = focus && n >= focus[0] && n <= focus[1] ? "code-line is-focus" : "code-line"
+      return `<tr class="${cls}"><td class="code-line__num" data-line="${n}"></td><td class="code-line__text">${text}</td></tr>`
+    })
+    .join("")}</tbody></table></div>`
 
 const chip = (label: string, count: number, checked: boolean) =>
   `<label class="chip"><input type="checkbox" class="chip__input"${checked ? " checked" : ""}><span class="chip__label">${label}</span><span class="chip__count">${count}</span></label>`
@@ -215,4 +227,8 @@ export const HTML_DEMOS: Record<string, string> = {
     <details class="disclosure gallery__fill" open><summary class="disclosure__summary">Details</summary><div class="disclosure__body">Open from the start.</div></details>`,
   "banner-dismiss": `
     <div class="banner banner--warning gallery__fill" role="status"><div class="banner__message">Sync is 3 hours behind.</div><button type="button" class="banner__dismiss" aria-label="Dismiss">×</button></div>`,
+  markdown: `<div class="markdown-body gallery__fill">${MARKDOWN_HTML}</div>`,
+  "code-block": CODE_BLOCK_HTML,
+  "code-snippet": snippet(SNIPPET_LINES.map(esc), 41, [43, 44]),
+  "code-snippet-hl": snippet(HL_LINES.map(runsHtml), 1),
 }

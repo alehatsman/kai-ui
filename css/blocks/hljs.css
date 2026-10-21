@@ -1,0 +1,82 @@
+/* hljs-* — highlight.js / lowlight scope classes mapped to --hl-* tokens.
+   Colour only, no background: it inherits the surface it sits on. Scopes
+   with a trailing-underscore class (title.function_) are matched by
+   attribute: that class is not BEM, and ui-lint reads only class selectors. */
+
+.hljs-comment,
+.hljs-quote {
+  color: var(--hl-comment);
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-section,
+.hljs-doctag,
+.hljs-type,
+.hljs-name,
+.hljs-strong {
+  color: var(--hl-keyword);
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-meta .hljs-string {
+  color: var(--hl-string);
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link {
+  color: var(--hl-number);
+}
+
+.hljs-title,
+.hljs-built_in {
+  color: var(--hl-function);
+}
+
+.hljs-title[class~="class_"],
+.hljs-class .hljs-title,
+.hljs-variable[class~="constant_"] {
+  color: var(--hl-class);
+}
+
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-selector-attr,
+.hljs-selector-pseudo {
+  color: var(--hl-attr);
+}
+
+.hljs-tag,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: var(--hl-tag);
+}
+
+.hljs-meta {
+  color: var(--hl-meta);
+}
+
+.hljs-addition {
+  color: var(--tone-success);
+  background: var(--tone-success-bg);
+}
+
+.hljs-deletion {
+  color: var(--tone-danger);
+  background: var(--tone-danger-bg);
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: var(--weight-bold);
+}

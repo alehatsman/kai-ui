@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
-import { cssLength, initials, pageList } from "../../contract/index.ts"
+import { cssLength, initials, inRange, pageList } from "../../contract/index.ts"
 
 test("pageList: first, last, two either side, gaps collapsed", () => {
   assert.deepEqual(pageList(5, 12), [1, null, 3, 4, 5, 6, 7, null, 12])
@@ -21,4 +21,12 @@ test("cssLength: number is px, string as given", () => {
   assert.equal(cssLength(12), "12px")
   assert.equal(cssLength("40%"), "40%")
   assert.equal(cssLength(undefined), undefined)
+})
+
+test("inRange: inclusive both ends, no range never matches", () => {
+  assert.equal(inRange(43, [43, 44]), true)
+  assert.equal(inRange(44, [43, 44]), true)
+  assert.equal(inRange(42, [43, 44]), false)
+  assert.equal(inRange(45, [43, 44]), false)
+  assert.equal(inRange(1, undefined), false)
 })

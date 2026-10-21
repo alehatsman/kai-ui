@@ -86,3 +86,11 @@ export interface MenuItem<L = string> {
   /** Set on every item of a pick-one menu: renders menuitemradio + aria-checked. */
   selected?: boolean
 }
+
+/** Inclusive 1-based line range, e.g. the lines a review comment annotates. */
+export type LineRange = readonly [from: number, to: number]
+
+/** True when line `n` falls inside `range` (inclusive). No range, no match. */
+export function inRange(n: number, range: LineRange | undefined): boolean {
+  return range !== undefined && n >= range[0] && n <= range[1]
+}

@@ -10,6 +10,7 @@ import {
   Card,
   Checkbox,
   Chip,
+  CodeSnippet,
   ConfirmDialog,
   DataState,
   Dialog,
@@ -41,6 +42,7 @@ import {
   Toolbar,
   Tooltip,
 } from "../react/index.ts"
+import { HL_BLOCK_HTML, HL_LINES, MARKDOWN_HTML, type Run, SNIPPET_LINES } from "./content.ts"
 
 const TONES: Tone[] = ["neutral", "accent", "success", "warning", "danger", "done"]
 const RANGES = [
@@ -454,6 +456,37 @@ const DEMOS: Record<string, () => ReactNode> = {
     </>
   ),
   "banner-dismiss": () => <DismissDemo />,
+  markdown: () => (
+    <div
+      className="markdown-body gallery__fill"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: static gallery sample, standing in for renderer output
+      dangerouslySetInnerHTML={{ __html: MARKDOWN_HTML }}
+    />
+  ),
+  "code-block": () => (
+    <pre className="code-block">
+      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static gallery sample, standing in for highlighter output */}
+      <code dangerouslySetInnerHTML={{ __html: HL_BLOCK_HTML }} />
+    </pre>
+  ),
+  "code-snippet": () => <CodeSnippet lines={SNIPPET_LINES} startLine={41} focus={[43, 44]} />,
+  "code-snippet-hl": () => <CodeSnippet lines={HL_LINES.map(runNodes)} />,
+}
+
+/** A line's runs as nodes, keyed by character offset. */
+function runNodes(runs: readonly Run[]): ReactNode[] {
+  let at = 0
+  return runs.map(([cls, text]) => {
+    const key = at
+    at += text.length
+    return cls ? (
+      <span key={key} className={cls}>
+        {text}
+      </span>
+    ) : (
+      text
+    )
+  })
 }
 
 function ListState(props: { isLoading: boolean; error: unknown; data: string[] | undefined }) {

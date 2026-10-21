@@ -1,0 +1,66 @@
+/* code-block — fenced code outside markdown. code-snippet / code-line — a
+   read-only, line-numbered region with an optional focus range. Both scroll
+   sideways; neither wraps. The border keeps them visible where --code-bg
+   equals the page (Monokai). */
+
+.code-block {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  overflow: auto;
+  font: var(--text-sm) / 20px var(--font-mono);
+  white-space: pre;
+  color: var(--code-fg);
+  background: var(--code-bg);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius);
+}
+
+.code-snippet {
+  overflow-x: auto;
+  color: var(--code-fg);
+  background: var(--code-bg);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius);
+}
+
+.code-snippet__table {
+  width: 100%;
+  border-collapse: collapse;
+  font: var(--text-sm) / 20px var(--font-mono);
+}
+
+/* A fixed row height: an empty line keeps its place. Matches the 20px line. */
+.code-line {
+  height: 20px;
+}
+
+/* The number comes from data-line via ::before, so selecting code skips it. */
+.code-line__num {
+  width: 1%;
+  min-width: 50px;
+  padding: 0 var(--space-4) 0 10px;
+  color: var(--fg-muted);
+  text-align: right;
+  vertical-align: top;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.code-line__num::before {
+  content: attr(data-line);
+}
+
+.code-line__text {
+  width: 100%;
+  padding: 0 var(--space-4);
+  vertical-align: top;
+  white-space: pre;
+}
+
+.code-line.is-focus > td {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.code-line.is-focus > .code-line__num {
+  box-shadow: inset 2px 0 0 var(--accent);
+}

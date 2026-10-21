@@ -15,6 +15,7 @@
     Card,
     Checkbox,
     Chip,
+    CodeSnippet,
     ConfirmDialog,
     DataState,
     Dialog,
@@ -46,6 +47,7 @@
     Toolbar,
     Tooltip,
   } from "../svelte/index.ts"
+  import { HL_BLOCK_HTML, HL_LINES, MARKDOWN_HTML, SNIPPET_LINES } from "./content.ts"
 
   let { id }: { id: string } = $props()
 
@@ -313,4 +315,14 @@
       Sync is 3 hours behind.
     </Banner>
   {/if}
+{:else if id === "markdown"}
+  <div class="markdown-body gallery__fill">{@html MARKDOWN_HTML}</div>
+{:else if id === "code-block"}
+  <pre class="code-block"><code>{@html HL_BLOCK_HTML}</code></pre>
+{:else if id === "code-snippet"}
+  <CodeSnippet lines={SNIPPET_LINES} startLine={41} focus={[43, 44]} />
+{:else if id === "code-snippet-hl"}
+  <CodeSnippet lines={HL_LINES.map((runs) => runs.map(([, t]) => t).join(""))}>
+    {#snippet line(_text, n)}{#each HL_LINES[n - 1] ?? [] as [cls, text], i (i)}{#if cls}<span class={cls}>{text}</span>{:else}{text}{/if}{/each}{/snippet}
+  </CodeSnippet>
 {/if}
