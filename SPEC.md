@@ -1,6 +1,6 @@
 # kai-ui — spec
 
-Status: draft v0.1, no code. Date: 2026-10-21.
+Status: v0.1 core implemented (branch feat/v0.1-core). Date: 2026-10-21.
 
 ## 1. Goal
 
@@ -66,9 +66,13 @@ UI.md rule 1); compile-to-both tools (magic, a dependency); one framework only.
 Base set = the 49 names codefort and autolab already share, plus:
 
 - Semantic tones (replace codefort `--state-*` and teleport/money ad-hoc pairs):
-  `--tone-{accent,success,warning,danger,done,neutral}` and `-bg` for each.
+  `--tone-{success,warning,danger,done}` and `-bg` for each. Accent and
+  neutral reuse `--accent`/`--accent-muted` and `--fg-muted`/`--neutral-muted`.
   `done` = GitHub purple / Monokai purple. Apps map domain → tone at call site.
-- `--primary`, `--primary-hover`, `--fg-on-emphasis` (from autolab).
+- `--primary`, `--primary-hover`, `--fg-on-emphasis` (from autolab), plus
+  `--accent-emphasis` — the filled-accent surface (segmented active, switch on).
+  GitHub dark needs it darker than text accent to keep white text at AA.
+- `--text-control`: font size inside inputs (touch density sets 16px).
 - `--control-h` 32px, `--control-h-sm` 26px (from autolab).
 - `--hl-*` (9) + `--code-bg/-fg/-line-hl` (from codefort).
 - `--series-1..8` chart palette per theme (for money's Plot; not used by blocks).
@@ -111,15 +115,15 @@ input font to 16px (iOS no-zoom). Teleport sets it under `(pointer: coarse)`.
 
 | Component | Block | Props (shared contract) | Source |
 |---|---|---|---|
-| Button | `btn` | `variant: default\|primary\|ghost\|danger`, `size: md\|sm` | codefort/autolab |
+| Button | `btn` | `variant: default\|primary\|ghost\|danger`, `size: md\|small` | codefort/autolab |
 | Input / Textarea / Select | `input` `textarea` `select` | native + `invalid` | autolab |
 | Field | `field` | `label, hint, error, id` + slot giving `{controlId, describedBy}` | autolab |
 | Checkbox / Radio / Switch | `checkbox` `radio` `switch` | `label` + native | autolab |
 | SegmentedControl | `segmented` | `options, value, onChange, label` | codefort |
 | Badge | `badge` | `tone` | autolab |
-| StatusDot | `dot` | `tone, pulse, label` (sr-only twin) | teleport/money |
+| StatusDot | `status` + `dot` | `tone, pulse, label, showLabel` (sr-only twin) | teleport/money |
 | Card | `card` | `padded, selected` | codefort |
-| Table | `data-table` | `fit`; Head/Row/Cell with `num, muted` | autolab |
+| Table | `data-table` | `fit, wrap`; Head `num`; Row `muted`; Cell `num, nowrap, muted` | autolab |
 | Stack / Inline | `stack` `inline` | `gap 0-6, align, justify, wrap, as` | codefort |
 | PageHeader | `page-header` | `title, meta, actions` | codefort |
 | EmptyState | `empty-state` | `title` + children | autolab |
@@ -147,16 +151,18 @@ One package, subpath exports. Consumed as a git tag dependency:
 `"kai-ui": "github:alehatsman/kai-ui#v0.1.0"`.
 
 ```
-kai-ui/css        → css/index.css (or individual blocks)
-kai-ui/theme      → theme/index.js
-kai-ui/react      → react/index.js   (peer: react ≥19, optional)
-kai-ui/svelte     → svelte/index.js  (peer: svelte ≥5, optional; ships .svelte source)
-kai-ui/contract   → types only
+kai-ui/css        → css/index.css (or css/<file>)
+kai-ui/theme      → theme/index.ts
+kai-ui/react      → react/index.ts    (peers: react ≥19, clsx — optional)
+kai-ui/svelte     → svelte/index.ts   (peer: svelte ≥5.20 — optional; .svelte source)
+kai-ui/contract   → contract/index.ts
 ```
 
-Built output (`dist/`) committed on tags only, so a git dependency installs with no
-build step (codefort deploys from a temp clone; money bans CDNs). Deps:
-`clsx` (react binding) only.
+Ships source, no build step: every consumer is Vite + TS on the same
+ts-quality baseline, so it compiles kai-ui like its own code. A git dependency
+installs with nothing to run (codefort deploys from a temp clone; money bans
+CDNs). Revisit only if a consumer appears that cannot compile TS. Runtime
+deps: none; `clsx` is a peer of the React binding.
 
 ### 6.2 Class names (canonical, BEM, UI.md rules 3–8)
 
@@ -192,8 +198,12 @@ might collide.
 - localStorage throws (Safari private, Tauri webview quirks): default theme, no crash.
 - Theme flash: bootstrap must run before first stylesheet paint.
 - OS theme changes live while `data-theme` absent: pure CSS, no listener.
-- Monokai lime + white text fails contrast (codefort `styles.css:1704`): primary
-  button on Monokai uses dark fg — encode in tokens (`--fg-on-emphasis`), not a patch.
+- Monokai lime + white text fails contrast (codefort `styles.css:1704`): Monokai
+  sets `--fg-on-emphasis` to its dark canvas — a token, not a patch.
+- Canonical Monokai pink `#f92672` is 3.9:1 on `#272822`, under AA: Monokai
+  `--tone-danger` is `#ff6188`. Syntax keywords keep the canonical pink.
+- Danger buttons stay text-on-tint on hover in every theme (no filled danger),
+  so no theme needs a second on-emphasis colour.
 - Reduced motion: all transitions/keyframes inert (spinner, skeleton, toast).
 - Consumer CSS order: kai-ui first, app after; specificity = single class, so app wins ties.
 - SSR: none of the four apps SSR; bindings must still not touch `window` at import.
@@ -220,7 +230,16 @@ might collide.
 3. Migrate: autolab → codefort → money → teleport. One PR per app.
 4. v0.2, then reassess "later" list.
 
-## 11. Open questions
+## 11. v0.1 as built
+
+- Gallery: `npm run dev`. Toolbar: theme, view (all / HTML / React / Svelte), touch density.
+- `npm run check`: Biome, tsc + svelte-check, unit (token parity, WCAG contrast
+  per theme, theme bootstrap), Playwright (DOM parity across HTML/React/Svelte
+  for every demo, live bindings, each theme state + reload, touch density).
+- Screenshots per theme land in `test-results/screens/` for review by eye.
+- ts-quality ui-lint over `css/` and `gallery/gallery.css`: clean.
+
+## 12. Open questions
 
 - Default theme per app: codefort = monokai (today). autolab/money/teleport = ?
 - Body base size: codefort/autolab 14px (`--text-md`), money 14px, teleport system 16px. Proposal: 14px; touch density bumps inputs only.
