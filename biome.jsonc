@@ -1,0 +1,54 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
+  // biome.jsonc, not biome.json: Biome reads the latter as strict JSON and,
+  // on a parse error, runs with defaults (no excludes) instead of failing.
+  // biome.base.json is ts-quality's baseline, extended and never edited.
+  "extends": ["./biome.base.json"],
+  "files": {
+    // No leading "**": the baseline supplies the catch-all.
+    "includes": [
+      "!**/node_modules",
+      "!**/dist",
+      "!biome.base.json",
+      "!tsconfig.base.json",
+      "!*.tsbuildinfo",
+      "!**/playwright-report",
+      "!**/test-results"
+    ]
+  },
+  "html": {
+    "formatter": {
+      "indentScriptAndStyle": true
+    }
+  },
+  "linter": {
+    "rules": {
+      "correctness": {
+        // As codefort, autolab, money: Biome cannot follow the exports maps of
+        // react, svelte and vite. tsc and svelte-check resolve them.
+        "noUnresolvedImports": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      // The barrels ARE the package's public entry points.
+      "includes": ["react/index.ts", "svelte/index.ts"],
+      "linter": { "rules": { "performance": { "noBarrelFile": "off", "noReExportAll": "off" } } }
+    },
+    {
+      // As money: Biome lints only the <script> of a .svelte file, so names used
+      // only in the template look unused. svelte-check covers them.
+      "includes": ["**/*.svelte"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedVariables": "off",
+            "noUnusedImports": "off",
+            "noUndeclaredDependencies": "off"
+          }
+        }
+      }
+    }
+  ]
+}

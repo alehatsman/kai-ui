@@ -1,0 +1,58 @@
+/* input, select, textarea — one control height, one border, one focus. */
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+  font-size: var(--text-control);
+  transition: border-color var(--transition-fast);
+}
+
+.input,
+.select {
+  height: var(--control-h);
+  padding: 0 var(--space-3);
+}
+
+.select {
+  padding-right: var(--space-2);
+  cursor: pointer;
+}
+
+.textarea {
+  min-height: calc(var(--control-h) * 3);
+  padding: var(--space-2) var(--space-3);
+  line-height: var(--leading-normal);
+  resize: vertical;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--accent);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--fg-muted);
+}
+
+.input:disabled,
+.select:disabled,
+.textarea:disabled {
+  background: var(--bg-canvas);
+  color: var(--fg-muted);
+  cursor: not-allowed;
+}
+
+.input.is-invalid,
+.select.is-invalid,
+.textarea.is-invalid {
+  border-color: var(--tone-danger);
+}

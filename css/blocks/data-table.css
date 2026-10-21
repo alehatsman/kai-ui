@@ -1,0 +1,54 @@
+/* data-table — Table, TableHead, TableRow, TableCell. */
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-base);
+}
+
+/* Sized to its content: a few columns spread over a wide page are hard to read across. */
+.data-table--fit {
+  width: auto;
+  min-width: min(100%, 480px);
+}
+
+.data-table__wrap {
+  overflow-x: auto;
+}
+
+.data-table__head {
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--border);
+  color: var(--fg-muted);
+  font-weight: var(--weight-semibold);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.data-table__head--num {
+  text-align: right;
+}
+
+.data-table__row--muted {
+  color: var(--fg-muted);
+}
+
+.data-table__cell {
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--border-muted);
+  vertical-align: top;
+}
+
+.data-table__cell--num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.data-table__cell--nowrap {
+  white-space: nowrap;
+}
+
+.data-table__cell--muted {
+  color: var(--fg-muted);
+}

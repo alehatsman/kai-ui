@@ -1,0 +1,49 @@
+/* dot — StatusDot: an 8px colour mark. Always aria-hidden beside an sr-only
+   (or visible) label — colour is never the only signal (UI.md rule 18). */
+
+.dot {
+  display: inline-block;
+  flex: none;
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-circle);
+  background: var(--fg-muted);
+}
+
+.dot--accent {
+  background: var(--accent);
+}
+
+.dot--success {
+  background: var(--tone-success);
+}
+
+.dot--warning {
+  background: var(--tone-warning);
+}
+
+.dot--danger {
+  background: var(--tone-danger);
+}
+
+.dot--done {
+  background: var(--tone-done);
+}
+
+.dot--pulse {
+  animation: dot-pulse calc(var(--spin) * 2) ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--fg-muted);
+  font-size: var(--text-base);
+}

@@ -1,0 +1,16 @@
+// kai-ui/react — thin bindings over kai-ui/css. Markup and class composition only.
+
+export type * from "../contract/index.ts"
+export { Badge } from "./Badge.tsx"
+export { Button, buttonClass } from "./Button.tsx"
+export { Card } from "./Card.tsx"
+export { Checkbox, Radio, Switch } from "./Choice.tsx"
+export { Input, Select, Textarea } from "./Controls.tsx"
+export { DataState } from "./DataState.tsx"
+export { Banner, EmptyState, ErrorMessage, Spinner } from "./Feedback.tsx"
+export { Field } from "./Field.tsx"
+export { Inline, Stack } from "./Layout.tsx"
+export { PageHeader } from "./PageHeader.tsx"
+export { SegmentedControl } from "./SegmentedControl.tsx"
+export { StatusDot } from "./StatusDot.tsx"
+export { Table, TableCell, TableHead, TableRow } from "./Table.tsx"

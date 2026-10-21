@@ -1,0 +1,105 @@
+// Every custom property css/tokens.css defines on :root, grouped for the
+// gallery. tests/unit/tokens.test.ts fails when this and the stylesheet differ.
+
+export const TOKENS = {
+  surface: [
+    "--bg",
+    "--bg-canvas",
+    "--bg-elev",
+    "--bg-card",
+    "--border",
+    "--border-muted",
+    "--fg",
+    "--fg-muted",
+    "--fg-on-emphasis",
+    "--accent",
+    "--accent-emphasis",
+    "--accent-muted",
+    "--neutral-muted",
+    "--control-bg",
+    "--control-bg-hover",
+    "--primary",
+    "--primary-hover",
+  ],
+  tone: [
+    "--tone-success",
+    "--tone-success-bg",
+    "--tone-warning",
+    "--tone-warning-bg",
+    "--tone-danger",
+    "--tone-danger-bg",
+    "--tone-done",
+    "--tone-done-bg",
+  ],
+  elevation: ["--shadow-sm", "--shadow-md", "--backdrop"],
+  code: [
+    "--hl-comment",
+    "--hl-keyword",
+    "--hl-string",
+    "--hl-number",
+    "--hl-function",
+    "--hl-class",
+    "--hl-attr",
+    "--hl-tag",
+    "--hl-meta",
+    "--code-bg",
+    "--code-fg",
+    "--code-line-hl",
+  ],
+  series: [
+    "--series-1",
+    "--series-2",
+    "--series-3",
+    "--series-4",
+    "--series-5",
+    "--series-6",
+    "--series-7",
+    "--series-8",
+  ],
+  radius: ["--radius-sm", "--radius", "--radius-lg", "--radius-pill", "--radius-circle"],
+  space: ["--space-1", "--space-2", "--space-3", "--space-4", "--space-5", "--space-6"],
+  font: ["--font-sans", "--font-mono"],
+  text: [
+    "--text-2xs",
+    "--text-xs",
+    "--text-sm",
+    "--text-base",
+    "--text-md",
+    "--text-lg",
+    "--text-xl",
+    "--text-2xl",
+    "--text-3xl",
+  ],
+  weight: ["--weight-normal", "--weight-medium", "--weight-semibold", "--weight-bold"],
+  leading: [
+    "--leading-none",
+    "--leading-tight",
+    "--leading-snug",
+    "--leading-normal",
+    "--leading-relaxed",
+  ],
+  motion: ["--transition-fast", "--transition", "--spin"],
+  layout: [
+    "--control-h",
+    "--control-h-sm",
+    "--text-control",
+    "--content-max",
+    "--z-dropdown",
+    "--z-overlay",
+    "--z-toast",
+  ],
+} as const
+
+export type TokenGroup = keyof typeof TOKENS
+export type TokenName = (typeof TOKENS)[TokenGroup][number]
+
+/** Colour tokens: the set every theme block must override, no more, no less. */
+export const THEMED: readonly TokenName[] = [
+  ...TOKENS.surface,
+  ...TOKENS.tone,
+  ...TOKENS.elevation,
+  ...TOKENS.code,
+  ...TOKENS.series,
+]
+
+export const ALL_TOKENS: readonly TokenName[] = Object.values(TOKENS).flat()

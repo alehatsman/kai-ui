@@ -1,0 +1,17 @@
+{
+  // Strictness from ts-quality's baseline; shape here. One project: the
+  // library (contract, theme, react, svelte), the gallery and the tests.
+  // svelte-check reads it too.
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "types": ["node", "vite/client"],
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "include": ["contract", "theme", "react", "svelte", "gallery", "tests", "scripts", "*.ts"]
+}

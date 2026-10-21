@@ -1,0 +1,62 @@
+/* kai-ui base: reset, page defaults, focus ring, reduced motion, sr-only.
+   Element selectors only, plus the one utility (UI.md rule 6). */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  scrollbar-color: var(--border) transparent;
+}
+
+body {
+  margin: 0;
+  font: var(--text-md) / var(--leading-normal) var(--font-sans);
+  color: var(--fg);
+  background: var(--bg);
+}
+
+a {
+  color: var(--accent);
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--font-mono);
+}
+
+/* UI.md rule 17: a ring on keyboard focus, never `outline: none`. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* UI.md rule 16: the one place `!important` belongs. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: UI.md rule 16, reduced motion must win over every block */
+    animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: UI.md rule 16, reduced motion must win over every block */
+    animation-iteration-count: 1 !important;
+    /* biome-ignore lint/complexity/noImportantStyles: UI.md rule 16, reduced motion must win over every block */
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

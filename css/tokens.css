@@ -1,0 +1,305 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   kai-ui tokens. The only place a raw color, radius, duration or font stack
+   lives (UI.md rule 14). Blocks read these and never branch on theme (rule 15).
+
+   Themes, selected by data-theme on <html>:
+     absent        GitHub, light or dark following the OS
+     github-light  GitHub light, forced
+     github-dark   GitHub dark, forced
+     monokai       Monokai, always dark
+
+   :root below is GitHub light and carries every token. Each theme block
+   overrides the same set of colour tokens — tests/tokens.test.ts holds them
+   to it, and holds the OS-dark block equal to github-dark.
+
+   A colour value stays on its `--name:` line: ui-lint exempts only that line
+   from raw-color, never a continuation line. (The formatter may wrap the
+   font stacks; they hold no colour.)
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  color-scheme: light dark;
+
+  /* Surfaces & text */
+  --bg: #ffffff;
+  --bg-canvas: #f6f8fa;
+  --bg-elev: #ffffff;
+  --bg-card: #ffffff;
+  --border: #d0d7de;
+  --border-muted: #d8dee4;
+  --fg: #1f2328;
+  --fg-muted: #59636e;
+  --fg-on-emphasis: #ffffff;
+  --accent: #0969da;
+  --accent-emphasis: #0969da;
+  --accent-muted: #ddf4ff;
+  --neutral-muted: rgb(175 184 193 / 20%);
+  --control-bg: #f6f8fa;
+  --control-bg-hover: #eef1f4;
+  --primary: #1f883d;
+  --primary-hover: #1a7f37;
+
+  /* Tones — semantic, never domain. Apps map `merged` → done at the call site. */
+  --tone-success: #1a7f37;
+  --tone-success-bg: #dafbe1;
+  --tone-warning: #9a6700;
+  --tone-warning-bg: #fff8c5;
+  --tone-danger: #cf222e;
+  --tone-danger-bg: #ffebe9;
+  --tone-done: #8250df;
+  --tone-done-bg: #fbefff;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 0 rgb(31 35 40 / 4%);
+  --shadow-md: 0 8px 24px rgb(31 35 40 / 12%), 0 0 0 1px rgb(31 35 40 / 4%);
+  --backdrop: rgb(31 35 40 / 40%);
+
+  /* Syntax highlight (GitHub light) + code surface */
+  --hl-comment: #6e7781;
+  --hl-keyword: #cf222e;
+  --hl-string: #0a3069;
+  --hl-number: #0550ae;
+  --hl-function: #8250df;
+  --hl-class: #953800;
+  --hl-attr: #0550ae;
+  --hl-tag: #116329;
+  --hl-meta: #6e7781;
+  --code-bg: #f6f8fa;
+  --code-fg: #1f2328;
+  --code-line-hl: #fff8c5;
+
+  /* Chart series — for app charts (money's Plot); no block reads them. */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+  --series-7: #6250d6;
+  --series-8: #898781;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+
+  /* Spacing — 4px grid */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* Typography. System stacks only — no font service, ever. */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --text-2xs: 10px;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-md: 14px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 26px;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --leading-none: 1;
+  --leading-tight: 1.3;
+  --leading-snug: 1.4;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.55;
+
+  /* Motion */
+  --transition-fast: 80ms;
+  --transition: 120ms;
+  --spin: 800ms;
+
+  /* Controls & layout. --text-control is the font size inside inputs:
+     touch density raises it to 16px so iOS does not zoom on focus. */
+  --control-h: 32px;
+  --control-h-sm: 26px;
+  --text-control: var(--text-md);
+  --content-max: 1200px;
+  --z-dropdown: 10;
+  --z-overlay: 100;
+  --z-toast: 200;
+}
+
+/* GitHub dark, following the OS. Must equal [data-theme="github-dark"] below. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #0d1117;
+    --bg-canvas: #010409;
+    --bg-elev: #161b22;
+    --bg-card: #161b22;
+    --border: #30363d;
+    --border-muted: #21262d;
+    --fg: #e6edf3;
+    --fg-muted: #9198a1;
+    --fg-on-emphasis: #ffffff;
+    --accent: #4493f8;
+    --accent-emphasis: #1f6feb;
+    --accent-muted: #0d2a4d;
+    --neutral-muted: rgb(110 118 129 / 40%);
+    --control-bg: #21262d;
+    --control-bg-hover: #30363d;
+    --primary: #238636;
+    --primary-hover: #1f7a31;
+    --tone-success: #3fb950;
+    --tone-success-bg: #0f2a19;
+    --tone-warning: #d29922;
+    --tone-warning-bg: #2e2508;
+    --tone-danger: #f85149;
+    --tone-danger-bg: #3a1417;
+    --tone-done: #ab7df8;
+    --tone-done-bg: #251a3d;
+    --shadow-sm: 0 1px 0 rgb(0 0 0 / 30%);
+    --shadow-md: 0 8px 24px rgb(1 4 9 / 60%), 0 0 0 1px #30363d;
+    --backdrop: rgb(1 4 9 / 60%);
+    --hl-comment: #8b949e;
+    --hl-keyword: #ff7b72;
+    --hl-string: #a5d6ff;
+    --hl-number: #79c0ff;
+    --hl-function: #d2a8ff;
+    --hl-class: #ffa657;
+    --hl-attr: #79c0ff;
+    --hl-tag: #7ee787;
+    --hl-meta: #8b949e;
+    --code-bg: #161b22;
+    --code-fg: #e6edf3;
+    --code-line-hl: #2e2508;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --series-5: #d55181;
+    --series-6: #2ea043;
+    --series-7: #9085e9;
+    --series-8: #9a9890;
+  }
+}
+
+:root[data-theme="github-light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="github-dark"] {
+  color-scheme: dark;
+  --bg: #0d1117;
+  --bg-canvas: #010409;
+  --bg-elev: #161b22;
+  --bg-card: #161b22;
+  --border: #30363d;
+  --border-muted: #21262d;
+  --fg: #e6edf3;
+  --fg-muted: #9198a1;
+  --fg-on-emphasis: #ffffff;
+  --accent: #4493f8;
+  --accent-emphasis: #1f6feb;
+  --accent-muted: #0d2a4d;
+  --neutral-muted: rgb(110 118 129 / 40%);
+  --control-bg: #21262d;
+  --control-bg-hover: #30363d;
+  --primary: #238636;
+  --primary-hover: #1f7a31;
+  --tone-success: #3fb950;
+  --tone-success-bg: #0f2a19;
+  --tone-warning: #d29922;
+  --tone-warning-bg: #2e2508;
+  --tone-danger: #f85149;
+  --tone-danger-bg: #3a1417;
+  --tone-done: #ab7df8;
+  --tone-done-bg: #251a3d;
+  --shadow-sm: 0 1px 0 rgb(0 0 0 / 30%);
+  --shadow-md: 0 8px 24px rgb(1 4 9 / 60%), 0 0 0 1px #30363d;
+  --backdrop: rgb(1 4 9 / 60%);
+  --hl-comment: #8b949e;
+  --hl-keyword: #ff7b72;
+  --hl-string: #a5d6ff;
+  --hl-number: #79c0ff;
+  --hl-function: #d2a8ff;
+  --hl-class: #ffa657;
+  --hl-attr: #79c0ff;
+  --hl-tag: #7ee787;
+  --hl-meta: #8b949e;
+  --code-bg: #161b22;
+  --code-fg: #e6edf3;
+  --code-line-hl: #2e2508;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-6: #2ea043;
+  --series-7: #9085e9;
+  --series-8: #9a9890;
+}
+
+/* Monokai — chrome and code. Canonical bg #272822; accents from the ST2
+   palette. Text-on-fill is the dark bg, not white: white on lime fails. */
+:root[data-theme="monokai"] {
+  color-scheme: dark;
+  --bg: #272822;
+  --bg-canvas: #1e1f1c;
+  --bg-elev: #2e2f29;
+  --bg-card: #2e2f29;
+  --border: #49483e;
+  --border-muted: #3e3d32;
+  --fg: #f8f8f2;
+  --fg-muted: #a6a28c;
+  --fg-on-emphasis: #1e1f1c;
+  --accent: #66d9ef;
+  --accent-emphasis: #66d9ef;
+  --accent-muted: #11343d;
+  --neutral-muted: rgb(117 113 94 / 30%);
+  --control-bg: #3e3d32;
+  --control-bg-hover: #49483e;
+  --primary: #a6e22e;
+  --primary-hover: #b6ec4a;
+  --tone-success: #a6e22e;
+  --tone-success-bg: #2c3a14;
+  --tone-warning: #e6db74;
+  --tone-warning-bg: #3a3618;
+  --tone-danger: #ff6188;
+  --tone-danger-bg: #44182b;
+  --tone-done: #ae81ff;
+  --tone-done-bg: #2e2348;
+  --shadow-sm: 0 1px 0 rgb(0 0 0 / 40%);
+  --shadow-md: 0 8px 24px rgb(0 0 0 / 40%), 0 0 0 1px rgb(0 0 0 / 30%);
+  --backdrop: rgb(0 0 0 / 50%);
+  --hl-comment: #75715e;
+  --hl-keyword: #f92672;
+  --hl-string: #e6db74;
+  --hl-number: #ae81ff;
+  --hl-function: #a6e22e;
+  --hl-class: #66d9ef;
+  --hl-attr: #fd971f;
+  --hl-tag: #a6e22e;
+  --hl-meta: #75715e;
+  --code-bg: #272822;
+  --code-fg: #f8f8f2;
+  --code-line-hl: #3e3d32;
+  --series-1: #66d9ef;
+  --series-2: #a6e22e;
+  --series-3: #fd971f;
+  --series-4: #f92672;
+  --series-5: #ae81ff;
+  --series-6: #e6db74;
+  --series-7: #a1efe4;
+  --series-8: #75715e;
+}
+
+/* Touch density: 44px targets, 16px control text (no iOS focus zoom). */
+:root[data-density="touch"] {
+  --control-h: 44px;
+  --control-h-sm: 36px;
+  --text-control: 16px;
+}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>kai-ui gallery</title>
+    <!-- kai-ui:theme-bootstrap -->
+  </head>
+  <body>
+    <header class="gallery-bar">
+      <strong class="gallery-bar__title">kai-ui</strong>
+      <span class="badge">v0.1</span>
+      <!-- biome-ignore lint/a11y/useSemanticElements: a labelled group of toggle buttons, as SegmentedControl -->
+      <div class="segmented" role="group" aria-label="Theme" data-picker="theme">
+        <button type="button" class="segmented__option" data-value="auto">Auto</button>
+        <button type="button" class="segmented__option" data-value="github-light">GitHub light</button>
+        <button type="button" class="segmented__option" data-value="github-dark">GitHub dark</button>
+        <button type="button" class="segmented__option" data-value="monokai">Monokai</button>
+      </div>
+      <!-- biome-ignore lint/a11y/useSemanticElements: a labelled group of toggle buttons, as SegmentedControl -->
+      <div class="segmented" role="group" aria-label="View" data-picker="view">
+        <button type="button" class="segmented__option" data-value="all">All</button>
+        <button type="button" class="segmented__option" data-value="html">HTML</button>
+        <button type="button" class="segmented__option" data-value="react">React</button>
+        <button type="button" class="segmented__option" data-value="svelte">Svelte</button>
+      </div>
+      <label class="switch">
+        <span class="switch__control">
+          <input type="checkbox" class="switch__input" data-picker="density" />
+          <span class="switch__track"></span>
+          <span class="switch__thumb"></span>
+        </span>
+        <span class="switch__label">Touch density</span>
+      </label>
+    </header>
+    <main class="gallery" id="gallery"></main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+/* kai-ui: everything, in order. Import before the app's own stylesheet. */
+@import "./tokens.css";
+@import "./base.css";
+@import "./blocks/btn.css";
+@import "./blocks/control.css";
+@import "./blocks/field.css";
+@import "./blocks/choice.css";
+@import "./blocks/segmented.css";
+@import "./blocks/badge.css";
+@import "./blocks/dot.css";
+@import "./blocks/card.css";
+@import "./blocks/data-table.css";
+@import "./blocks/layout.css";
+@import "./blocks/page-header.css";
+@import "./blocks/feedback.css";

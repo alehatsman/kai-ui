@@ -1,0 +1,40 @@
+/* badge — Badge: a pill label. Neutral by default; tone modifiers. */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 3px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--neutral-muted);
+  color: var(--fg);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-none);
+  white-space: nowrap;
+}
+
+.badge--accent {
+  background: var(--accent-muted);
+  color: var(--accent);
+}
+
+.badge--success {
+  background: var(--tone-success-bg);
+  color: var(--tone-success);
+}
+
+.badge--warning {
+  background: var(--tone-warning-bg);
+  color: var(--tone-warning);
+}
+
+.badge--danger {
+  background: var(--tone-danger-bg);
+  color: var(--tone-danger);
+}
+
+.badge--done {
+  background: var(--tone-done-bg);
+  color: var(--tone-done);
+}

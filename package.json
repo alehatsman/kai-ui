@@ -1,0 +1,73 @@
+{
+  "name": "kai-ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared UI kit — tokens, BEM blocks, thin React and Svelte bindings. Monokai + GitHub.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    "./css": "./css/index.css",
+    "./css/*": "./css/*",
+    "./contract": "./contract/index.ts",
+    "./theme": "./theme/index.ts",
+    "./react": "./react/index.ts",
+    "./svelte": {
+      "types": "./svelte/index.ts",
+      "svelte": "./svelte/index.ts",
+      "default": "./svelte/index.ts"
+    }
+  },
+  "files": [
+    "css",
+    "contract",
+    "theme",
+    "react",
+    "svelte"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build:gallery": "vite build",
+    "lint": "biome check --error-on-warnings --max-diagnostics=none .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "tsc -p tsconfig.json && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
+    "test:unit": "node --test tests/unit/*.test.ts",
+    "test:e2e": "playwright test",
+    "test": "npm run test:unit && npm run test:e2e",
+    "check": "npm run lint && npm run typecheck && npm test"
+  },
+  "peerDependencies": {
+    "clsx": "^2.1.1",
+    "react": "^19.0.0",
+    "svelte": "^5.20.0"
+  },
+  "peerDependenciesMeta": {
+    "clsx": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.13",
+    "@playwright/test": "1.63.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@types/node": "24.19.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "clsx": "2.1.1",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "svelte": "^5.57.2",
+    "svelte-check": "^4.7.7",
+    "typescript": "6.0.3",
+    "vite": "8.3.0"
+  }
+}
