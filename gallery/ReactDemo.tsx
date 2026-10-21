@@ -1,22 +1,32 @@
 import { type ReactNode, useState } from "react"
+import { createToaster } from "../behavior/toast.ts"
 import type { BannerTone, Tone } from "../contract/index.ts"
 import {
+  Avatar,
   Badge,
   Banner,
   Button,
   buttonClass,
   Card,
   Checkbox,
+  Chip,
+  ConfirmDialog,
   DataState,
+  Dialog,
+  Disclosure,
   EmptyState,
   ErrorMessage,
   Field,
   Inline,
   Input,
+  Menu,
   PageHeader,
+  Pagination,
   Radio,
   SegmentedControl,
   Select,
+  Skeleton,
+  SkeletonText,
   Spinner,
   Stack,
   StatusDot,
@@ -25,7 +35,11 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Tabs,
   Textarea,
+  ToastStack,
+  Toolbar,
+  Tooltip,
 } from "../react/index.ts"
 
 const TONES: Tone[] = ["neutral", "accent", "success", "warning", "danger", "done"]
@@ -64,6 +78,86 @@ const BANNERS: [BannerTone, string][] = [
   ["warning", "Sync is 3 hours behind."],
   ["danger", "Import failed."],
 ]
+
+function DialogDemo() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Open dialog</Button>
+      <Dialog
+        open={open}
+        title="Rename dashboard"
+        onClose={() => setOpen(false)}
+        onSubmit={() => setOpen(false)}
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit">
+              Save
+            </Button>
+          </>
+        }
+      >
+        <Field label="Name">{({ controlId }) => <Input id={controlId} />}</Field>
+      </Dialog>
+    </>
+  )
+}
+
+function ConfirmDemo() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <Button variant="danger" onClick={() => setOpen(true)}>
+        Delete…
+      </Button>
+      <ConfirmDialog
+        open={open}
+        title="Delete dashboard?"
+        confirmLabel="Delete"
+        onConfirm={() => setOpen(false)}
+        onClose={() => setOpen(false)}
+      >
+        This removes 12 panels. It cannot be undone.
+      </ConfirmDialog>
+    </>
+  )
+}
+
+function ThemeMenu() {
+  const [theme, setTheme] = useState("monokai")
+  return (
+    <Menu
+      label="Theme"
+      trigger="Theme"
+      size="small"
+      align="end"
+      items={[
+        { label: "GitHub", selected: theme === "github", onSelect: () => setTheme("github") },
+        { label: "Monokai", selected: theme === "monokai", onSelect: () => setTheme("monokai") },
+      ]}
+    />
+  )
+}
+
+const toaster = createToaster()
+toaster.push("Saved.", { tone: "success", duration: 0 })
+
+function PagerDemo() {
+  const [page, setPage] = useState(5)
+  return <Pagination page={page} last={12} onPage={setPage} />
+}
+
+function DismissDemo() {
+  const [shown, setShown] = useState(true)
+  return shown ? (
+    <Banner tone="warning" className="gallery__fill" onDismiss={() => setShown(false)}>
+      Sync is 3 hours behind.
+    </Banner>
+  ) : null
+}
 
 const DEMOS: Record<string, () => ReactNode> = {
   "btn-variants": () => (
@@ -266,6 +360,100 @@ const DEMOS: Record<string, () => ReactNode> = {
   ),
   "ds-empty": () => <ListState isLoading={false} error={null} data={[]} />,
   "ds-data": () => <ListState isLoading={false} error={null} data={["alpha", "beta"]} />,
+
+  dialog: () => <DialogDemo />,
+  "confirm-dialog": () => <ConfirmDemo />,
+  menu: () => (
+    <Menu
+      label="Dashboard actions"
+      trigger="Actions"
+      items={[
+        { label: "Duplicate", onSelect: () => undefined },
+        { label: "Export CSV", onSelect: () => undefined },
+        { label: "Delete", onSelect: () => undefined, disabled: true },
+      ]}
+    />
+  ),
+  "menu-radio": () => <ThemeMenu />,
+  tooltip: () => (
+    <>
+      <Tooltip label="Copy to clipboard">
+        {({ describedBy }) => <Button aria-describedby={describedBy}>Copy</Button>}
+      </Tooltip>
+      <Tooltip label="Opens the docs" placement="bottom">
+        {({ describedBy }) => (
+          <Button variant="ghost" aria-describedby={describedBy}>
+            Help
+          </Button>
+        )}
+      </Tooltip>
+    </>
+  ),
+
+  toast: () => (
+    <>
+      <Button size="small" onClick={() => toaster.push("Synced 3 accounts.")}>
+        Info
+      </Button>
+      <Button size="small" onClick={() => toaster.push("Saved.", { tone: "success" })}>
+        Success
+      </Button>
+      <Button size="small" onClick={() => toaster.push("Import failed.", { tone: "danger" })}>
+        Danger
+      </Button>
+      <ToastStack toaster={toaster} />
+    </>
+  ),
+
+  tabs: () => (
+    <Tabs
+      className="gallery__fill"
+      label="Repository"
+      items={[
+        { label: "Overview", href: "#overview", current: true },
+        { label: "Issues", href: "#issues", count: 12 },
+        { label: "Settings", href: "#settings" },
+      ]}
+    />
+  ),
+  pagination: () => <PagerDemo />,
+  toolbar: () => (
+    <Toolbar label="Filters" card className="gallery__fill">
+      <Chip label="Open" count={4} defaultChecked />
+      <Chip label="Closed" count={9} />
+      <Button variant="ghost" size="small">
+        Clear
+      </Button>
+    </Toolbar>
+  ),
+
+  avatar: () => (
+    <>
+      <Avatar name="Ada Lovelace" size="sm" />
+      <Avatar name="Ada Lovelace" />
+      <Avatar name="Ada Lovelace" size="lg" />
+      <Avatar name="linus" size="lg" />
+    </>
+  ),
+  skeleton: () => (
+    <div className="gallery__stack">
+      <Skeleton width="40%" />
+      <SkeletonText />
+      <Skeleton variant="block" />
+      <Skeleton variant="circle" />
+    </div>
+  ),
+  disclosure: () => (
+    <>
+      <Disclosure className="gallery__fill" summary="Advanced options">
+        Hidden until opened.
+      </Disclosure>
+      <Disclosure className="gallery__fill" summary="Details" open>
+        Open from the start.
+      </Disclosure>
+    </>
+  ),
+  "banner-dismiss": () => <DismissDemo />,
 }
 
 function ListState(props: { isLoading: boolean; error: unknown; data: string[] | undefined }) {

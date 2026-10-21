@@ -1,0 +1,68 @@
+/* menu — Menu: a trigger and a popover="auto" list. behavior/menu.ts places
+   it (position: fixed in the top layer), so the UA's centring is undone here. */
+
+.menu {
+  display: inline-flex;
+}
+
+.menu__popover {
+  position: fixed;
+  inset: auto;
+  min-width: 10rem;
+  margin: 0;
+  padding: var(--space-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  box-shadow: var(--shadow-md);
+  color: var(--fg);
+}
+
+.menu__popover:popover-open {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-h-sm);
+  padding: var(--space-1) var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--fg);
+  font: inherit;
+  font-size: var(--text-md);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Roving focus is the highlight; the global ring stays (UI.md rule 17). */
+.menu__item:hover:not(:disabled),
+.menu__item:focus {
+  background: var(--neutral-muted);
+}
+
+.menu__item:focus-visible {
+  outline-offset: -2px;
+}
+
+.menu__item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* A choice mark: the slot is always there, so labels line up. */
+.menu__item[role="menuitemradio"]::before {
+  content: "";
+  width: var(--space-3);
+  color: var(--accent);
+}
+
+.menu__item[aria-checked="true"]::before {
+  content: "✓";
+}

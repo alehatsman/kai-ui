@@ -7,6 +7,8 @@ import "./gallery.css"
 import { createElement } from "react"
 import { createRoot } from "react-dom/client"
 import { mount } from "svelte"
+import { attachDialog, syncDialog } from "../behavior/dialog.ts"
+import { attachMenu } from "../behavior/menu.ts"
 import { TOKENS, type TokenGroup } from "../contract/tokens.ts"
 import { applyDensity, getTheme, isThemeId, setTheme } from "../theme/index.ts"
 import { THEME_KEY } from "./config.ts"
@@ -112,6 +114,22 @@ function renderTokens() {
 renderTokens()
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderTokens)
 
+// The HTML column wires its few interactive blocks the way a hand-written
+// page would: behavior/ functions, no framework. A dialog opens from the
+// button just before it; its × and ghost Cancel close it.
+function wireHtml(cell: HTMLElement) {
+  for (const root of cell.querySelectorAll<HTMLElement>(".menu")) attachMenu(root)
+  for (const dialog of cell.querySelectorAll<HTMLDialogElement>("dialog.modal")) {
+    const set = (open: boolean) => syncDialog(dialog, open)
+    attachDialog(dialog, () => set(false))
+    dialog.previousElementSibling?.addEventListener("click", () => set(true))
+    for (const close of dialog.querySelectorAll(".modal__close, .modal__foot .btn")) {
+      if ((close as HTMLButtonElement).type !== "submit")
+        close.addEventListener("click", () => set(false))
+    }
+  }
+}
+
 // ── demos ──────────────────────────────────────────────────────────────────
 for (const section of SECTIONS) {
   const node = el("section", "gallery__section")
@@ -136,6 +154,7 @@ for (const section of SECTIONS) {
     }
     const cells = { html: cell("html"), react: cell("react"), svelte: cell("svelte") }
     cells.html.innerHTML = HTML_DEMOS[demo.id] ?? ""
+    wireHtml(cells.html)
     createRoot(cells.react).render(createElement(ReactDemo, { id: demo.id }))
     mount(SvelteDemo, { target: cells.svelte, props: { id: demo.id } })
     node.append(row)

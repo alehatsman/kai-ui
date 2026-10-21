@@ -61,6 +61,19 @@
   flex: 1 1 100%;
 }
 
+.gallery__stack {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* The demo shows the stack in place; in an app it is fixed bottom-right. */
+.demo__cell > .toast-stack {
+  position: static;
+  flex: 1 1 100%;
+}
+
 .gallery__list {
   margin: 0;
   padding-left: var(--space-4);

@@ -108,4 +108,39 @@ export const SECTIONS: Section[] = [
       { id: "ds-data", label: "data" },
     ],
   },
+  {
+    id: "overlays",
+    title: "Dialog · ConfirmDialog · Menu · Tooltip",
+    demos: [
+      { id: "dialog", label: "dialog with a form" },
+      { id: "confirm-dialog", label: "destructive confirm" },
+      { id: "menu", label: "action menu" },
+      { id: "menu-radio", label: "pick-one menu, align end" },
+      { id: "tooltip", label: "tooltip top, bottom" },
+    ],
+  },
+  {
+    id: "toast",
+    title: "ToastStack",
+    demos: [{ id: "toast", label: "push by tone (stack shown in place)" }],
+  },
+  {
+    id: "navigation",
+    title: "Tabs · Pagination · Toolbar · Chip",
+    demos: [
+      { id: "tabs", label: "navigation tabs" },
+      { id: "pagination", label: "page 5 of 12" },
+      { id: "toolbar", label: "toolbar card with chips" },
+    ],
+  },
+  {
+    id: "misc",
+    title: "Avatar · Skeleton · Disclosure · Banner dismiss",
+    demos: [
+      { id: "avatar", label: "sizes, initials" },
+      { id: "skeleton", label: "line, text, block, circle" },
+      { id: "disclosure", label: "closed, open" },
+      { id: "banner-dismiss", label: "dismissible banner" },
+    ],
+  },
 ]

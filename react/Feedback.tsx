@@ -43,13 +43,18 @@ export function ErrorMessage({
   )
 }
 
-/** A full-width strip. danger is announced (`role="alert"`), the rest politely (`status`). */
+/**
+ * A full-width strip. danger is announced (`role="alert"`), the rest politely (`status`).
+ * `onDismiss` adds a × that calls it; the caller removes the banner.
+ */
 export function Banner({
   tone = "accent",
+  onDismiss,
   children,
   className,
 }: {
   tone?: BannerTone
+  onDismiss?: (() => void) | undefined
   children: ReactNode
   className?: string
 }) {
@@ -58,7 +63,21 @@ export function Banner({
       className={clsx("banner", tone !== "accent" && `banner--${tone}`, className)}
       role={tone === "danger" ? "alert" : "status"}
     >
-      {children}
+      {onDismiss ? (
+        <>
+          <div className="banner__message">{children}</div>
+          <button
+            type="button"
+            className="banner__dismiss"
+            aria-label="Dismiss"
+            onClick={onDismiss}
+          >
+            ×
+          </button>
+        </>
+      ) : (
+        children
+      )}
     </div>
   )
 }

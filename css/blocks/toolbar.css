@@ -1,0 +1,15 @@
+/* toolbar — Toolbar: a wrapping row of controls; --card puts it on a surface. */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.toolbar--card {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-canvas);
+}

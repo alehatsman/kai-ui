@@ -1,0 +1,57 @@
+/* chip — Chip: a filter toggle. A real checkbox, visually hidden; the pill
+   shows its state and its focus. */
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--control-h-sm);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.chip:hover {
+  background: var(--bg-canvas);
+  color: var(--fg);
+}
+
+.chip__input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.chip:has(.chip__input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-muted);
+  color: var(--fg);
+}
+
+.chip:has(.chip__input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.chip:has(.chip__input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chip__count {
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}

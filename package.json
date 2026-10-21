@@ -1,6 +1,6 @@
 {
   "name": "kai-ui",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Shared UI kit — tokens, BEM blocks, thin React and Svelte bindings. Monokai + GitHub.",
   "license": "UNLICENSED",
@@ -13,6 +13,7 @@
     "./css/*": "./css/*",
     "./contract": "./contract/index.ts",
     "./theme": "./theme/index.ts",
+    "./behavior": "./behavior/index.ts",
     "./react": "./react/index.ts",
     "./svelte": {
       "types": "./svelte/index.ts",

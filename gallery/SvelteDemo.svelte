@@ -1,21 +1,37 @@
+<script lang="ts" module>
+  import { createToaster } from "../behavior/toast.ts"
+
+  const toaster = createToaster()
+  toaster.push("Saved.", { tone: "success", duration: 0 })
+</script>
+
 <script lang="ts">
   import type { BannerTone, Tone } from "../contract/index.ts"
   import {
+    Avatar,
     Badge,
     Banner,
     Button,
     Card,
     Checkbox,
+    Chip,
+    ConfirmDialog,
     DataState,
+    Dialog,
+    Disclosure,
     EmptyState,
     ErrorMessage,
     Field,
     Inline,
     Input,
+    Menu,
     PageHeader,
+    Pagination,
     Radio,
     SegmentedControl,
     Select,
+    Skeleton,
+    SkeletonText,
     Spinner,
     Stack,
     StatusDot,
@@ -24,7 +40,11 @@
     TableCell,
     TableHead,
     TableRow,
+    Tabs,
     Textarea,
+    ToastStack,
+    Toolbar,
+    Tooltip,
   } from "../svelte/index.ts"
 
   let { id }: { id: string } = $props()
@@ -45,6 +65,13 @@
   let range = $state("week")
   let plan = $state("free")
   const failure = new Error("Request failed: 502")
+
+  let dialogOpen = $state(false)
+  let confirmOpen = $state(false)
+  let theme = $state("monokai")
+  let page = $state(5)
+  let bannerShown = $state(true)
+  const noop = () => undefined
 </script>
 
 {#snippet listState(isLoading: boolean, error: unknown, data: string[] | undefined)}
@@ -186,4 +213,104 @@
   {@render listState(false, null, [])}
 {:else if id === "ds-data"}
   {@render listState(false, null, ["alpha", "beta"])}
+{:else if id === "dialog"}
+  <Button onclick={() => (dialogOpen = true)}>Open dialog</Button>
+  <Dialog
+    open={dialogOpen}
+    title="Rename dashboard"
+    onClose={() => (dialogOpen = false)}
+    onSubmit={() => (dialogOpen = false)}
+  >
+    <Field label="Name">
+      {#snippet children({ controlId })}<Input id={controlId} />{/snippet}
+    </Field>
+    {#snippet footer()}
+      <Button variant="ghost" onclick={() => (dialogOpen = false)}>Cancel</Button>
+      <Button variant="primary" type="submit">Save</Button>
+    {/snippet}
+  </Dialog>
+{:else if id === "confirm-dialog"}
+  <Button variant="danger" onclick={() => (confirmOpen = true)}>Delete…</Button>
+  <ConfirmDialog
+    bind:open={confirmOpen}
+    title="Delete dashboard?"
+    confirmLabel="Delete"
+    onConfirm={() => (confirmOpen = false)}
+  >
+    This removes 12 panels. It cannot be undone.
+  </ConfirmDialog>
+{:else if id === "menu"}
+  <Menu
+    label="Dashboard actions"
+    trigger="Actions"
+    items={[
+      { label: "Duplicate", onSelect: noop },
+      { label: "Export CSV", onSelect: noop },
+      { label: "Delete", onSelect: noop, disabled: true },
+    ]}
+  />
+{:else if id === "menu-radio"}
+  <Menu
+    label="Theme"
+    trigger="Theme"
+    size="small"
+    align="end"
+    items={[
+      { label: "GitHub", selected: theme === "github", onSelect: () => (theme = "github") },
+      { label: "Monokai", selected: theme === "monokai", onSelect: () => (theme = "monokai") },
+    ]}
+  />
+{:else if id === "tooltip"}
+  <Tooltip label="Copy to clipboard">
+    {#snippet children({ describedBy })}<Button aria-describedby={describedBy}>Copy</Button>{/snippet}
+  </Tooltip>
+  <Tooltip label="Opens the docs" placement="bottom">
+    {#snippet children({ describedBy })}
+      <Button variant="ghost" aria-describedby={describedBy}>Help</Button>
+    {/snippet}
+  </Tooltip>
+{:else if id === "toast"}
+  <Button size="small" onclick={() => toaster.push("Synced 3 accounts.")}>Info</Button>
+  <Button size="small" onclick={() => toaster.push("Saved.", { tone: "success" })}>Success</Button>
+  <Button size="small" onclick={() => toaster.push("Import failed.", { tone: "danger" })}>Danger</Button>
+  <ToastStack {toaster} />
+{:else if id === "tabs"}
+  <Tabs
+    class="gallery__fill"
+    label="Repository"
+    items={[
+      { label: "Overview", href: "#overview", current: true },
+      { label: "Issues", href: "#issues", count: 12 },
+      { label: "Settings", href: "#settings" },
+    ]}
+  />
+{:else if id === "pagination"}
+  <Pagination bind:page last={12} />
+{:else if id === "toolbar"}
+  <Toolbar label="Filters" card class="gallery__fill">
+    <Chip label="Open" count={4} checked />
+    <Chip label="Closed" count={9} />
+    <Button variant="ghost" size="small">Clear</Button>
+  </Toolbar>
+{:else if id === "avatar"}
+  <Avatar name="Ada Lovelace" size="sm" />
+  <Avatar name="Ada Lovelace" />
+  <Avatar name="Ada Lovelace" size="lg" />
+  <Avatar name="linus" size="lg" />
+{:else if id === "skeleton"}
+  <div class="gallery__stack">
+    <Skeleton width="40%" />
+    <SkeletonText />
+    <Skeleton variant="block" />
+    <Skeleton variant="circle" />
+  </div>
+{:else if id === "disclosure"}
+  <Disclosure class="gallery__fill" summary="Advanced options">Hidden until opened.</Disclosure>
+  <Disclosure class="gallery__fill" summary="Details" open>Open from the start.</Disclosure>
+{:else if id === "banner-dismiss"}
+  {#if bannerShown}
+    <Banner tone="warning" class="gallery__fill" onDismiss={() => (bannerShown = false)}>
+      Sync is 3 hours behind.
+    </Banner>
+  {/if}
 {/if}

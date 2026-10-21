@@ -1,0 +1,80 @@
+/* modal — Dialog, ConfirmDialog: a native <dialog> with head, body, foot. */
+
+.modal {
+  width: min(560px, calc(100vw - var(--space-5)));
+  max-height: calc(100dvh - var(--space-6));
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elev);
+  box-shadow: var(--shadow-md);
+  color: var(--fg);
+  overflow: hidden;
+}
+
+.modal::backdrop {
+  background: var(--backdrop);
+}
+
+.modal__form {
+  display: flex;
+  flex-direction: column;
+  max-height: inherit;
+}
+
+.modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.modal__title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+}
+
+.modal__close {
+  padding: var(--space-1) var(--space-2);
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--fg-muted);
+  font: inherit;
+  font-size: var(--text-xl);
+  line-height: var(--leading-none);
+  cursor: pointer;
+}
+
+.modal__close:hover {
+  background: var(--neutral-muted);
+  color: var(--fg);
+}
+
+.modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 0;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+.modal__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-muted);
+  background: var(--bg-canvas);
+}
+
+/* An inline error in the foot pushes the buttons right. */
+.modal__foot > .error-message--inline {
+  margin-right: auto;
+}

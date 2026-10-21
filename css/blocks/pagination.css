@@ -1,0 +1,26 @@
+/* pagination — Pagination: Previous, page numbers, Next. Buttons are btn. */
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.pagination__page {
+  min-width: var(--control-h-sm);
+  padding: 0 var(--space-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.pagination__page.is-active,
+.pagination__page.is-active:hover:not(:disabled) {
+  border-color: var(--accent-emphasis);
+  background: var(--accent-emphasis);
+  color: var(--fg-on-emphasis);
+}
+
+.pagination__gap {
+  padding: 0 var(--space-1);
+  color: var(--fg-muted);
+}

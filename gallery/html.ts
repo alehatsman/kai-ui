@@ -1,9 +1,31 @@
 // Layer 1 alone: each demo as hand-written markup, no binding. If a block
 // needs JS to look right, it shows here first.
 
+import { pageList } from "../contract/index.ts"
+
 const TONES = ["neutral", "accent", "success", "warning", "danger", "done"] as const
 const mod = (block: string, tone: string) =>
   tone === "neutral" ? block : `${block} ${block}--${tone}`
+
+const modalHead = (title: string) =>
+  `<header class="modal__head"><h2 class="modal__title">${title}</h2><button type="button" class="modal__close" aria-label="Close">×</button></header>`
+
+const menuItem = (label: string, extra = "") =>
+  `<button type="button" class="menu__item" role="menuitem" tabindex="-1"${extra}>${label}</button>`
+
+const pageButton = (p: number) =>
+  p === 5
+    ? `<button type="button" class="btn btn--small pagination__page is-active" aria-current="page">${p}</button>`
+    : `<button type="button" class="btn btn--small pagination__page">${p}</button>`
+
+const pages = pageList(5, 12)
+  .map((p) =>
+    p === null ? `<span class="pagination__gap" aria-hidden="true">…</span>` : pageButton(p)
+  )
+  .join("")
+
+const chip = (label: string, count: number, checked: boolean) =>
+  `<label class="chip"><input type="checkbox" class="chip__input"${checked ? " checked" : ""}><span class="chip__label">${label}</span><span class="chip__count">${count}</span></label>`
 
 export const HTML_DEMOS: Record<string, string> = {
   "btn-variants": `
@@ -118,4 +140,79 @@ export const HTML_DEMOS: Record<string, string> = {
   "ds-error": `<div class="error-message" role="alert">Request failed: 502</div>`,
   "ds-empty": `<div class="empty-state gallery__fill"><p class="empty-state__title">Nothing here</p></div>`,
   "ds-data": `<ul class="gallery__list"><li>alpha</li><li>beta</li></ul>`,
+
+  dialog: `
+    <button type="button" class="btn">Open dialog</button>
+    <dialog class="modal"><form class="modal__form" method="dialog">
+      ${modalHead("Rename dashboard")}
+      <div class="modal__body"><div class="field"><label class="field__label" for="html-dlg-name">Name</label><input class="input" id="html-dlg-name"></div></div>
+      <footer class="modal__foot"><button type="button" class="btn btn--ghost">Cancel</button><button type="submit" class="btn btn--primary">Save</button></footer>
+    </form></dialog>`,
+  "confirm-dialog": `
+    <button type="button" class="btn btn--danger">Delete…</button>
+    <dialog class="modal"><form class="modal__form" method="dialog">
+      ${modalHead("Delete dashboard?")}
+      <div class="modal__body">This removes 12 panels. It cannot be undone.</div>
+      <footer class="modal__foot"><button type="button" class="btn btn--ghost">Cancel</button><button type="button" class="btn btn--danger">Delete</button></footer>
+    </form></dialog>`,
+  menu: `
+    <div class="menu">
+      <button type="button" class="btn" popovertarget="html-menu-a" aria-haspopup="menu" aria-expanded="false" aria-controls="html-menu-a">Actions</button>
+      <div id="html-menu-a" popover="auto" role="menu" aria-label="Dashboard actions" class="menu__popover">
+        ${menuItem("Duplicate")}${menuItem("Export CSV")}${menuItem("Delete", " disabled")}
+      </div>
+    </div>`,
+  "menu-radio": `
+    <div class="menu">
+      <button type="button" class="btn btn--small" popovertarget="html-menu-b" aria-haspopup="menu" aria-expanded="false" aria-controls="html-menu-b">Theme</button>
+      <div id="html-menu-b" popover="auto" role="menu" aria-label="Theme" class="menu__popover menu__popover--end">
+        <button type="button" class="menu__item" role="menuitemradio" aria-checked="false" tabindex="-1">GitHub</button>
+        <button type="button" class="menu__item" role="menuitemradio" aria-checked="true" tabindex="-1">Monokai</button>
+      </div>
+    </div>`,
+  tooltip: `
+    <span class="tooltip"><button type="button" class="btn" aria-describedby="html-tip-a">Copy</button><span id="html-tip-a" role="tooltip" class="tooltip__bubble tooltip__bubble--top">Copy to clipboard</span></span>
+    <span class="tooltip"><button type="button" class="btn btn--ghost" aria-describedby="html-tip-b">Help</button><span id="html-tip-b" role="tooltip" class="tooltip__bubble tooltip__bubble--bottom">Opens the docs</span></span>`,
+
+  toast: `
+    <button type="button" class="btn btn--small">Info</button>
+    <button type="button" class="btn btn--small">Success</button>
+    <button type="button" class="btn btn--small">Danger</button>
+    <section class="toast-stack" aria-label="Notifications" aria-live="polite">
+      <div class="toast toast--success"><span class="toast__message">Saved.</span><button type="button" class="toast__close" aria-label="Dismiss">×</button></div>
+    </section>`,
+
+  tabs: `
+    <nav class="tabs gallery__fill" aria-label="Repository">
+      <a href="#overview" class="tabs__item" aria-current="page">Overview</a>
+      <a href="#issues" class="tabs__item">Issues<span class="tabs__count">12</span></a>
+      <a href="#settings" class="tabs__item">Settings</a>
+    </nav>`,
+  pagination: `
+    <nav class="pagination" aria-label="Pages">
+      <button type="button" class="btn btn--small">Previous</button>${pages}<button type="button" class="btn btn--small">Next</button>
+    </nav>`,
+  toolbar: `
+    <div class="toolbar toolbar--card gallery__fill" role="group" aria-label="Filters">
+      ${chip("Open", 4, true)}${chip("Closed", 9, false)}
+      <button type="button" class="btn btn--ghost btn--small">Clear</button>
+    </div>`,
+
+  avatar: `
+    <span class="avatar avatar--sm" role="img" aria-label="Ada Lovelace" title="Ada Lovelace">AL</span>
+    <span class="avatar" role="img" aria-label="Ada Lovelace" title="Ada Lovelace">AL</span>
+    <span class="avatar avatar--lg" role="img" aria-label="Ada Lovelace" title="Ada Lovelace">AL</span>
+    <span class="avatar avatar--lg" role="img" aria-label="linus" title="linus">L</span>`,
+  skeleton: `
+    <div class="gallery__stack">
+      <span class="skeleton skeleton--line" style="width: 40%" aria-hidden="true"></span>
+      <span class="skeleton-text" aria-hidden="true"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span></span>
+      <span class="skeleton skeleton--block" aria-hidden="true"></span>
+      <span class="skeleton skeleton--circle" aria-hidden="true"></span>
+    </div>`,
+  disclosure: `
+    <details class="disclosure gallery__fill"><summary class="disclosure__summary">Advanced options</summary><div class="disclosure__body">Hidden until opened.</div></details>
+    <details class="disclosure gallery__fill" open><summary class="disclosure__summary">Details</summary><div class="disclosure__body">Open from the start.</div></details>`,
+  "banner-dismiss": `
+    <div class="banner banner--warning gallery__fill" role="status"><div class="banner__message">Sync is 3 hours behind.</div><button type="button" class="banner__dismiss" aria-label="Dismiss">×</button></div>`,
 }

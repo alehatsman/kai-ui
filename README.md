@@ -26,7 +26,17 @@ import { Button, Field, Input } from "kai-ui/react"
 </script>
 ```
 
-Plain markup works too — the blocks need no JS: `<button class="btn btn--primary">`.
+Plain markup works too — most blocks need no JS: `<button class="btn btn--primary">`.
+The few that do (dialog, menu, toast) take one call from `kai-ui/behavior`:
+`attachMenu(root)`, `attachDialog(el, onClose)` + `syncDialog(el, open)`, `createToaster()`.
+
+### Components
+
+Button · Input · Select · Textarea · Field · Checkbox · Radio · Switch ·
+SegmentedControl · Chip · Badge · StatusDot · Avatar · Card · Table · Stack ·
+Inline · Toolbar · PageHeader · Tabs · Pagination · EmptyState · ErrorMessage ·
+Banner · Spinner · Skeleton · DataState · Disclosure · Dialog · ConfirmDialog ·
+Menu · Tooltip · ToastStack. All of them live in the gallery.
 
 ### Themes
 

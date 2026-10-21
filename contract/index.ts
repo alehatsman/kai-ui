@@ -36,3 +36,53 @@ export function toneClass(block: string, tone: Tone): string | undefined {
 export function errorText(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
 }
+
+export type Placement = "top" | "bottom" | "left" | "right"
+export type AvatarSize = "sm" | "md" | "lg"
+export type SkeletonVariant = "line" | "block" | "circle"
+
+/** Ids a Tooltip hands its control, as Field does. */
+export interface TooltipSlot {
+  describedBy: string
+}
+
+/** A navigation tab: a link. `current` marks the page you are on. */
+export interface TabItem {
+  label: string
+  href: string
+  current?: boolean
+  count?: number
+}
+
+/** Page numbers to show: first, last, and two either side of `current`; null is a gap. */
+export function pageList(current: number, last: number): (number | null)[] {
+  const out: (number | null)[] = []
+  for (let p = 1; p <= last; p++) {
+    if (p === 1 || p === last || Math.abs(p - current) <= 2) out.push(p)
+    else if (out.at(-1) !== null) out.push(null)
+  }
+  return out
+}
+
+/** Up to two initials: first letters of the first and last words. */
+export function initials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean)
+  const first = words[0]?.charAt(0) ?? ""
+  const last = words.length > 1 ? (words.at(-1)?.charAt(0) ?? "") : ""
+  return (first + last).toUpperCase() || "?"
+}
+
+/** A CSS length from a number (px) or a string (as given). */
+export function cssLength(v: string | number | undefined): string | undefined {
+  if (v === undefined) return undefined
+  return typeof v === "number" ? `${v}px` : v
+}
+
+/** A menu entry. `L` is what a label may be: a string, or a framework node. */
+export interface MenuItem<L = string> {
+  label: L
+  onSelect: () => void
+  disabled?: boolean
+  /** Set on every item of a pick-one menu: renders menuitemradio + aria-checked. */
+  selected?: boolean
+}

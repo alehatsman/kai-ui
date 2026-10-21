@@ -1,6 +1,6 @@
 # kai-ui — spec
 
-Status: v0.1 core implemented (branch feat/v0.1-core). Date: 2026-10-21.
+Status: v0.1 core + v0.2 more implemented (branches feat/v0.1-core, feat/v0.2-more). Date: 2026-10-21.
 
 ## 1. Goal
 
@@ -133,9 +133,46 @@ input font to 16px (iOS no-zoom). Teleport sets it under `(pointer: coarse)`.
 
 ### v0.2 more
 
-Dialog + ConfirmDialog (`<dialog>`), Menu (`popover`), Tooltip (CSS), Toast
-(+ vanilla queue), Tabs (router-agnostic), Pagination, Skeleton, Disclosure
-(`<details>`), Toolbar, Chip, Avatar, Notice.
+Layer 2 lands here: behaviour that needs JS lives once, in `behavior/`, as
+plain functions over DOM nodes. Both bindings call them from an effect /
+action; a hand-written-HTML user calls them directly. No framework owns it.
+
+| Component | Block | Props (shared contract) | Behaviour |
+|---|---|---|---|
+| Dialog | `modal` | `open, title, onClose, onSubmit?, footer` | native `<dialog>` + `behavior/dialog.ts`: `syncDialog(el, open)`, `attachDialog(el, onClose)` — Esc, backdrop click, `method="dialog"` submit all route to `onClose`; parent `open` is the only truth |
+| ConfirmDialog | `modal` | `open, title, confirmLabel, onConfirm, onClose, pending, error` | Dialog + danger confirm + cancel |
+| Menu | `menu` | `label, trigger, items: {label, onSelect, disabled?, selected?}[], align, variant, size` | `popover="auto"` (top layer, light dismiss, focus return) + `behavior/menu.ts` `attachMenu(root)`: aria-expanded, fixed positioning with flip, arrow/Home/End roving, close on choose |
+| Tooltip | `tooltip` | `label, placement` + control slot `{ describedBy }` | CSS only (`:hover`, `:focus-within`) |
+| ToastStack | `toast-stack`, `toast` | `toaster` | `behavior/toast.ts` `createToaster()`: `push(message, {tone, duration})`, `dismiss`, `subscribe`. A plain module the app owns (UI.md rule 21), no context |
+| Tabs | `tabs` | `label, items: {label, href, current?, count?}[]` (+ React `renderLink`) | none — navigation tabs are links with `aria-current="page"`. In-page switching is SegmentedControl |
+| Pagination | `pagination` | `page, last, onPage` (1-based) | `pageList()` in contract, shared |
+| Skeleton | `skeleton` | `variant: line\|block\|circle, width, height`; SkeletonText `lines` | CSS shimmer, inert under reduced motion |
+| Disclosure | `disclosure` | `summary, open` | native `<details>` |
+| Toolbar | `toolbar` | `label, card` | none; `role="group"` (a `toolbar` role would owe arrow-key roving) |
+| Chip | `chip` | `label, checked, count?` | native checkbox inside a label |
+| Avatar | `avatar` | `name, src?, size: sm\|md\|lg` | initials (≤2) when no `src` |
+| Banner | `banner` | + `onDismiss?` → `banner__dismiss` | replaces the planned Notice |
+
+Interfaces held across both bindings: same props, same DOM (parity test),
+callbacks named `onX`. Svelte additionally offers `bind:` for `open`
+(Dialog, Disclosure) and `checked` (Chip).
+
+v0.2 edge cases:
+- Dialog `open` true at mount → `showModal()` after the element connects.
+  Unmount while open → closes (no orphaned top-layer modal).
+- Esc fires `cancel`; kai-ui prevents the native close and calls `onClose`, so
+  a parent that refuses (keeps `open`) keeps the dialog open.
+- Backdrop click = click whose target is the `<dialog>` itself, never a child.
+- Menu inside `overflow: hidden` (cards, tables): popover is top layer, never clipped.
+- Menu near the viewport bottom/right edge: flips above / aligns end.
+- Menu items all disabled: opening focuses the popover itself, keys do nothing.
+- popover support: Chromium 114+, Safari/WebKit 17+, Firefox 125+. WebKitGTK
+  (teleport desktop) ≥ 2.44 — check the Tauri target before teleport adopts Menu.
+- Toast: duration 0 = sticky; danger toasts `role="alert"`, the rest live in
+  the stack's `aria-live="polite"`. Timers cleared on dismiss.
+- Tooltip is a hint, never the only label: an icon-only trigger still needs `aria-label`.
+- Pagination renders nothing for `last <= 1`.
+- Avatar `src` that fails to load: shows initials (onerror swaps in the fallback).
 
 ### Later — decide after v0.2
 
@@ -153,6 +190,7 @@ One package, subpath exports. Consumed as a git tag dependency:
 ```
 kai-ui/css        → css/index.css (or css/<file>)
 kai-ui/theme      → theme/index.ts
+kai-ui/behavior   → behavior/index.ts (dialog, menu, toast — for hand-written HTML)
 kai-ui/react      → react/index.ts    (peers: react ≥19, clsx — optional)
 kai-ui/svelte     → svelte/index.ts   (peer: svelte ≥5.20 — optional; .svelte source)
 kai-ui/contract   → contract/index.ts
@@ -239,9 +277,32 @@ might collide.
 - Screenshots per theme land in `test-results/screens/` for review by eye.
 - ts-quality ui-lint over `css/` and `gallery/gallery.css`: clean.
 
+### v0.2 as built
+
+- 13 more components per binding (Dialog, ConfirmDialog, Menu, Tooltip,
+  ToastStack, Tabs, Pagination, Skeleton, SkeletonText, Disclosure, Toolbar,
+  Chip, Avatar) + Banner `onDismiss`. `behavior/`: dialog, menu, toast.
+- Gallery: 16 more demos; the HTML column wires dialogs and menus with
+  `behavior/` alone, so layer 2 is proven without a framework.
+- Tests: unit +12 (pageList, initials, cssLength, toaster timers, dialog
+  sync/echo); e2e +27 (`behavior.spec.ts`: dialog Esc/×/Cancel/backdrop/submit,
+  menu roving/Esc focus return/placement/choose, tooltip, toast, pagination,
+  chip, banner) — each across the columns it applies to.
+- Found while building: syncDialog's own `close()` echoed back as onClose (a
+  queued `close` event). Fixed with a per-element marker; a unit test fails
+  without it.
+- Skeleton is a translucent `--neutral-muted` tint: canvas/border tones read
+  darker than the page in GitHub dark and vanish in GitHub light.
+- Menu item labels: `MenuItem<L>` in the contract — `ReactNode` in React,
+  string in Svelte (tsc cannot read type exports from `.svelte`).
+
 ## 12. Open questions
 
 - Default theme per app: codefort = monokai (today). autolab/money/teleport = ?
 - Body base size: codefort/autolab 14px (`--text-md`), money 14px, teleport system 16px. Proposal: 14px; touch density bumps inputs only.
 - Font stacks: system only (money bans font services). Confirm no webfont ever.
 - License / visibility of repo: private.
+- Tabs is navigation only. In-page tab panels (role=tablist, arrow keys) —
+  needed by any app? SegmentedControl covers switching today.
+- Teleport desktop: confirm the Tauri WebKitGTK version supports `popover`
+  before it adopts Menu.
