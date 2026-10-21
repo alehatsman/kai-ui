@@ -1,0 +1,228 @@
+# kai-ui — spec
+
+Status: draft v0.1, no code. Date: 2026-10-21.
+
+## 1. Goal
+
+One look, one vocabulary, across the fleet's web UIs. Monokai + GitHub themes.
+Consumed by Svelte 5 and React 19 apps without either framework owning it.
+
+Consumers (surveyed 2026-10-21):
+
+| App | Stack | Today | Migration weight |
+|---|---|---|---|
+| codefort | React 19 | Origin of tokens + Monokai, 46 primitives in `src/ui/` | Medium — rename classes (§6.2), drop local `ui/` copies |
+| autolab | React 19 | Port of codefort `@/ui`, BEM-fixed names | Low — closest to kai-ui already |
+| money | Svelte 5 | Own warm palette, no `ui/` yet | Medium — visual redesign, adopt blocks |
+| teleport | Svelte 5 + Tauri | Violet/gradient/glow, dark only, mobile-first | Medium — restyle, keep touch via density (§4.4) |
+
+## 2. Scope
+
+In: design tokens and themes, base stylesheet, framework-free BEM blocks,
+thin React and Svelte bindings over those blocks, a theme bootstrap, one
+gallery page with React/Svelte parity tests.
+
+Out: routing, data fetching, state, icons library, charts, domain components
+(money Grid/PanelFrame, teleport KeyBar/swipe rows, codefort DiffView/Comment).
+Those stay in apps (UI.md rule 12/24).
+
+## 3. Architecture — three layers
+
+```
+kai-ui/
+  css/           layer 1 — framework-free. THE product.
+    tokens.css     :root tokens + themes
+    base.css       reset, focus ring, reduced motion, sr-only, scrollbars
+    blocks/*.css   one BEM block per file (btn.css, badge.css, …)
+    index.css      @imports all of the above in order
+  contract/      shared TS: prop types both bindings implement (Tone, Size, ButtonProps…)
+  theme/         vanilla TS: getTheme/setTheme/applyTheme + inline bootstrap snippet
+  react/         layer 3a — thin .tsx bindings, clsx for class composition
+  svelte/        layer 3b — thin .svelte bindings, class: directive
+  gallery/       Vite app, both frameworks, one page (§7)
+```
+
+Layer 2 is "use the platform": `<dialog>`, `<details>`, `popover`, CSS-only
+tooltip. No JS behavior library. Where JS is unavoidable (toast queue, menu
+dismiss) it is a small vanilla module in `theme/`-style plain TS, wrapped by
+each binding.
+
+Rules:
+- A binding owns markup + class composition only. No fetching, no router, no
+  domain enums (UI.md rule 24).
+- A CSS block works with hand-written markup. Bindings are convenience, not a
+  requirement — a consumer may write `<button class="btn btn--primary">`.
+- Every binding component takes `class`/`className` and spreads native props.
+- Router-agnostic: link-like components render `<a href>`; React takes
+  `as`, Svelte takes a snippet, for router links.
+
+Rejected: web components (shadow DOM breaks the BEM/test-selector contract,
+UI.md rule 1); compile-to-both tools (magic, a dependency); one framework only.
+
+## 4. Tokens and themes
+
+### 4.1 Names
+
+Base set = the 49 names codefort and autolab already share, plus:
+
+- Semantic tones (replace codefort `--state-*` and teleport/money ad-hoc pairs):
+  `--tone-{accent,success,warning,danger,done,neutral}` and `-bg` for each.
+  `done` = GitHub purple / Monokai purple. Apps map domain → tone at call site.
+- `--primary`, `--primary-hover`, `--fg-on-emphasis` (from autolab).
+- `--control-h` 32px, `--control-h-sm` 26px (from autolab).
+- `--hl-*` (9) + `--code-bg/-fg/-line-hl` (from codefort).
+- `--series-1..8` chart palette per theme (for money's Plot; not used by blocks).
+- `--z-{dropdown,overlay,toast}`, `--content-max`.
+
+Dropped: `--state-*` (domain), `--color-folder` (codefort-local),
+`--stage*` (autolab-local), money `--s*` (→ `--series-*`).
+
+`css/tokens.css` is the single source; `contract/tokens.ts` lists every name
+and a test fails if they diverge (autolab `tokens.ts` precedent).
+
+### 4.2 Themes
+
+| `data-theme` on `<html>` | Renders |
+|---|---|
+| absent | GitHub, light/dark follows OS (`prefers-color-scheme`) |
+| `github-light` | GitHub light, forced |
+| `github-dark` | GitHub dark, forced |
+| `monokai` | Monokai, always dark |
+
+Values: GitHub = codefort `styles.css:8-140`; Monokai = codefort
+`styles.css:155-205`. Each block sets `color-scheme` accordingly.
+
+### 4.3 Theme bootstrap
+
+`kai-ui/theme`: `getTheme(key)`, `setTheme(key, id)`, `applyTheme(id)`, and
+`bootstrapSnippet(key, default)` — a string the app inlines into
+`index.html` `<head>` to apply before first paint. Storage key is per app
+(`codefort:theme`). localStorage access wrapped in try/catch. Apps that never
+offer a switcher (autolab, money) skip it and get OS-following GitHub.
+
+### 4.4 Density
+
+`[data-density="touch"]` on `<html>` raises `--control-h` to 44px, bumps
+input font to 16px (iOS no-zoom). Teleport sets it under `(pointer: coarse)`.
+
+## 5. Component list
+
+### v0.1 core
+
+| Component | Block | Props (shared contract) | Source |
+|---|---|---|---|
+| Button | `btn` | `variant: default\|primary\|ghost\|danger`, `size: md\|sm` | codefort/autolab |
+| Input / Textarea / Select | `input` `textarea` `select` | native + `invalid` | autolab |
+| Field | `field` | `label, hint, error, id` + slot giving `{controlId, describedBy}` | autolab |
+| Checkbox / Radio / Switch | `checkbox` `radio` `switch` | `label` + native | autolab |
+| SegmentedControl | `segmented` | `options, value, onChange, label` | codefort |
+| Badge | `badge` | `tone` | autolab |
+| StatusDot | `dot` | `tone, pulse, label` (sr-only twin) | teleport/money |
+| Card | `card` | `padded, selected` | codefort |
+| Table | `data-table` | `fit`; Head/Row/Cell with `num, muted` | autolab |
+| Stack / Inline | `stack` `inline` | `gap 0-6, align, justify, wrap, as` | codefort |
+| PageHeader | `page-header` | `title, meta, actions` | codefort |
+| EmptyState | `empty-state` | `title` + children | autolab |
+| ErrorMessage / Banner | `error-message` `banner` | `error, inline` / `tone` | autolab/money/teleport |
+| Spinner | `spinner` | `label` | autolab |
+| DataState | — | `data, loading, error, empty` + 4 render branches | codefort (UI.md rule 26) |
+
+### v0.2 more
+
+Dialog + ConfirmDialog (`<dialog>`), Menu (`popover`), Tooltip (CSS), Toast
+(+ vanilla queue), Tabs (router-agnostic), Pagination, Skeleton, Disclosure
+(`<details>`), Toolbar, Chip, Avatar, Notice.
+
+### Later — decide after v0.2
+
+Markdown body CSS, code-highlight block, xterm ANSI theme derived from tokens
+(teleport), CheckDropdown, icon set (Octicon-style inline SVG), Sidebar /
+DetailLayout.
+
+## 6. Interfaces
+
+### 6.1 Package
+
+One package, subpath exports. Consumed as a git tag dependency:
+`"kai-ui": "github:alehatsman/kai-ui#v0.1.0"`.
+
+```
+kai-ui/css        → css/index.css (or individual blocks)
+kai-ui/theme      → theme/index.js
+kai-ui/react      → react/index.js   (peer: react ≥19, optional)
+kai-ui/svelte     → svelte/index.js  (peer: svelte ≥5, optional; ships .svelte source)
+kai-ui/contract   → types only
+```
+
+Built output (`dist/`) committed on tags only, so a git dependency installs with no
+build step (codefort deploys from a temp clone; money bans CDNs). Deps:
+`clsx` (react binding) only.
+
+### 6.2 Class names (canonical, BEM, UI.md rules 3–8)
+
+autolab's names win where codefort differs:
+`.table → .data-table`, `.empty → .empty-state`, `.error → .error-message`,
+`.control → .checkbox/.radio`, `.badge--<issue-state> → .badge--<tone>`.
+State flags: `is-active`, `is-invalid`, `is-loading`.
+
+### 6.3 Consumer contract
+
+```css
+@import "kai-ui/css";          /* tokens + base + all blocks */
+```
+App-local blocks may read kai-ui tokens; never redefine kai-ui blocks.
+App-local tokens live in the app's base stylesheet, prefixed by app if they
+might collide.
+
+## 7. Gallery
+
+`gallery/` — one Vite app, React and Svelte plugins together, one page.
+
+- Sticky bar: theme switcher (auto / github-light / github-dark / monokai),
+  density toggle, framework view (React | Svelte | side-by-side).
+- Tokens section: live swatches read via `getComputedStyle` (autolab
+  `DevTokensPage` precedent).
+- One section per component; every variant × size × state. Each demo has a
+  stable `data-demo="btn-primary-sm"` id, rendered once per framework.
+- Also a plain-HTML column per demo (no binding) — proves layer 1 stands alone.
+
+## 8. Edge cases
+
+- No JS / binding: blocks render correctly from hand-written HTML.
+- localStorage throws (Safari private, Tauri webview quirks): default theme, no crash.
+- Theme flash: bootstrap must run before first stylesheet paint.
+- OS theme changes live while `data-theme` absent: pure CSS, no listener.
+- Monokai lime + white text fails contrast (codefort `styles.css:1704`): primary
+  button on Monokai uses dark fg — encode in tokens (`--fg-on-emphasis`), not a patch.
+- Reduced motion: all transitions/keyframes inert (spinner, skeleton, toast).
+- Consumer CSS order: kai-ui first, app after; specificity = single class, so app wins ties.
+- SSR: none of the four apps SSR; bindings must still not touch `window` at import.
+- Two bindings drift: caught by parity test (§9).
+- Tauri webview (teleport desktop): WebKitGTK/WebView2 — `popover` support
+  must be checked before v0.2 Menu; fallback = `<details>`.
+
+## 9. Validation
+
+1. **Token parity**: test — every `:root` name in `tokens.css` is in `contract/tokens.ts` and vice versa; every theme block defines the same set.
+2. **Binding parity**: Playwright — for each `data-demo`, React, Svelte and plain-HTML renders produce identical element tree + class lists.
+3. **Visual**: Playwright screenshots of the gallery × 4 theme states × 2 densities. Reviewed by eye on change (UI.md rule 29).
+4. **Lint**: Biome; `tsq/ci` ui-lint gate (bem-class, raw-color, raw-radius, raw-duration) over `css/`.
+5. **Contrast**: script checks fg/bg token pairs ≥ WCAG AA per theme.
+6. **Types**: `tsc` for contract + react; `svelte-check` for svelte.
+7. **Consumer smoke**: autolab adopts v0.1 first (closest shape) before tagging v0.1.0.
+
+## 10. Rollout
+
+1. Amend ts-quality `docs/UI.md` rule 2 (+ 9, 11, 28): kai-ui is the fleet
+   vocabulary; in-repo `ui/` holds only local primitives; gallery lives in kai-ui.
+   Update money `web/CLAUDE.md:10` to match.
+2. v0.1 core + gallery. Tag after autolab smoke.
+3. Migrate: autolab → codefort → money → teleport. One PR per app.
+4. v0.2, then reassess "later" list.
+
+## 11. Open questions
+
+- Default theme per app: codefort = monokai (today). autolab/money/teleport = ?
+- Body base size: codefort/autolab 14px (`--text-md`), money 14px, teleport system 16px. Proposal: 14px; touch density bumps inputs only.
+- Font stacks: system only (money bans font services). Confirm no webfont ever.
+- License / visibility of repo: private.
