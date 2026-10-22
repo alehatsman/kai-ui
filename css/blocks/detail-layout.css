@@ -1,0 +1,19 @@
+/* detail-layout — DetailLayout: main column + an aside rail. The rail wraps
+   below main when the two do not fit side by side — by the container's own
+   width, not the viewport's, so it holds inside any parent. */
+
+.detail-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  align-items: flex-start;
+}
+
+.detail-layout__main {
+  flex: 999 1 28rem;
+  min-width: 0;
+}
+
+.detail-layout > :not(.detail-layout__main) {
+  flex: 1 1 280px;
+}

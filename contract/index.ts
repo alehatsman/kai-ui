@@ -1,6 +1,10 @@
 // The prop contract both bindings implement. Value-level types only: what a
 // slot holds (ReactNode, Snippet) is each framework's business.
 
+import { ICONS, type IconName } from "./icons.ts"
+
+export { ICONS, type IconName }
+
 /** Semantic colour, never domain. The feature maps `merged` → "done". */
 export type Tone = "neutral" | "accent" | "success" | "warning" | "danger" | "done"
 
@@ -94,3 +98,95 @@ export type LineRange = readonly [from: number, to: number]
 export function inRange(n: number, range: LineRange | undefined): boolean {
   return range !== undefined && n >= range[0] && n <= range[1]
 }
+
+export interface IconOptions {
+  /** Accessible name. Without one the icon is decorative (aria-hidden). */
+  label?: string | undefined
+  /** Pixel size; the glyphs are drawn for 16. */
+  size?: number
+  className?: string | undefined
+}
+
+export interface IconAttrs {
+  class: string
+  width: number
+  height: number
+  viewBox: string
+  fill: string
+  role?: "img"
+  "aria-label"?: string
+  "aria-hidden"?: "true"
+}
+
+/** The attributes an icon's `<svg>` carries — one source for all three renderers. */
+export function iconAttrs({ label, size = 16, className }: IconOptions = {}): IconAttrs {
+  return {
+    class: className ? `icon ${className}` : "icon",
+    width: size,
+    height: size,
+    viewBox: "0 0 16 16",
+    fill: "currentColor",
+    ...(label ? { role: "img", "aria-label": label } : { "aria-hidden": "true" }),
+  }
+}
+
+const escAttr = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;")
+
+/** An icon as markup, for plain HTML. */
+export function iconSvg(name: IconName, opts: IconOptions = {}): string {
+  const attrs = Object.entries(iconAttrs(opts))
+    .map(([k, v]) => `${k}="${escAttr(String(v))}"`)
+    .join(" ")
+  const paths = ICONS[name].map((d) => `<path d="${d}"></path>`).join("")
+  return `<svg ${attrs}>${paths}</svg>`
+}
+
+/** One CheckDropdown option. `label` shows and is what search matches; else `value`. */
+export interface CheckOption {
+  value: string
+  label?: string | undefined
+  count?: number | undefined
+}
+
+export const optionName = (o: CheckOption): string => o.label ?? o.value
+
+/** Options to show: selected values missing from `options` first (still ticked), then matches. */
+export function checkOptions(
+  options: readonly CheckOption[],
+  selected: readonly string[],
+  query: string
+): CheckOption[] {
+  const q = query.trim().toLowerCase()
+  const unknown = selected.filter((v) => !options.some((o) => o.value === v))
+  const shown = q ? options.filter((o) => optionName(o).toLowerCase().includes(q)) : options
+  return [...unknown.map((value) => ({ value })), ...shown]
+}
+
+/** The selection after ticking (`on`) or unticking `value`. `single` holds at most one. */
+export function toggleSelection(
+  selected: readonly string[],
+  value: string,
+  on: boolean,
+  single = false
+): string[] {
+  if (single) return on ? [value] : []
+  if (on) return selected.includes(value) ? [...selected] : [...selected, value]
+  return selected.filter((v) => v !== value)
+}
+
+/** The trigger text: `anyLabel` for none, the one name, or "N selected". */
+export function checkSummary(
+  selected: readonly string[],
+  options: readonly CheckOption[],
+  anyLabel = "Any"
+): string {
+  if (selected.length === 0) return anyLabel
+  if (selected.length > 1) return `${selected.length} selected`
+  const only = selected[0] ?? ""
+  const o = options.find((x) => x.value === only)
+  return o ? optionName(o) : only
+}
+
+/** A count as shown beside an option: grouped thousands, nothing for 0 / none. */
+export const countText = (n: number | undefined): string => (n ? n.toLocaleString("en-US") : "")

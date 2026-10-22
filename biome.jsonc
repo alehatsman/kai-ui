@@ -33,7 +33,7 @@
   "overrides": [
     {
       // The barrels ARE the package's public entry points.
-      "includes": ["react/index.ts", "svelte/index.ts", "behavior/index.ts"],
+      "includes": ["react/index.ts", "svelte/index.ts", "behavior/index.ts", "theme/index.ts"],
       "linter": { "rules": { "performance": { "noBarrelFile": "off", "noReExportAll": "off" } } }
     },
     {

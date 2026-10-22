@@ -7,6 +7,7 @@ import "./gallery.css"
 import { createElement } from "react"
 import { createRoot } from "react-dom/client"
 import { mount } from "svelte"
+import { attachCheckDropdown } from "../behavior/check-dropdown.ts"
 import { attachDialog, syncDialog } from "../behavior/dialog.ts"
 import { attachMenu } from "../behavior/menu.ts"
 import { TOKENS, type TokenGroup } from "../contract/tokens.ts"
@@ -68,7 +69,7 @@ byPicker<HTMLInputElement>("density")?.addEventListener("change", (e) => {
 })
 
 // ── tokens ─────────────────────────────────────────────────────────────────
-const COLOUR_GROUPS: TokenGroup[] = ["surface", "tone", "code", "series"]
+const COLOUR_GROUPS: TokenGroup[] = ["surface", "tone", "code", "series", "ansi"]
 const tokenSection = el("section", "gallery__section")
 tokenSection.id = "tokens"
 const tokenBody = el("div", "gallery__tokens")
@@ -119,6 +120,8 @@ matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderToke
 // button just before it; its × and ghost Cancel close it.
 function wireHtml(cell: HTMLElement) {
   for (const root of cell.querySelectorAll<HTMLElement>(".menu")) attachMenu(root)
+  for (const root of cell.querySelectorAll<HTMLElement>(".check-dropdown"))
+    attachCheckDropdown(root)
   for (const dialog of cell.querySelectorAll<HTMLDialogElement>("dialog.modal")) {
     const set = (open: boolean) => syncDialog(dialog, open)
     attachDialog(dialog, () => set(false))

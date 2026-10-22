@@ -153,4 +153,16 @@ export const SECTIONS: Section[] = [
       { id: "code-snippet-hl", label: "highlighted runs per line" },
     ],
   },
+  {
+    id: "later",
+    title: "Icon · CheckDropdown · DetailLayout",
+    demos: [
+      { id: "icons", label: "a sample of the set, decorative" },
+      { id: "icon-labelled", label: "labelled, sizes, colour from text" },
+      { id: "check-dropdown", label: "multi, search from 8, counts, clear" },
+      { id: "check-dropdown-single", label: "single: radios + Any, pick closes" },
+      { id: "check-dropdown-required", label: "required: last tick locked; disabled" },
+      { id: "detail-layout", label: "main + sidebar rail (wraps when narrow)" },
+    ],
+  },
 ]

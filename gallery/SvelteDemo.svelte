@@ -13,16 +13,19 @@
     Banner,
     Button,
     Card,
+    CheckDropdown,
     Checkbox,
     Chip,
     CodeSnippet,
     ConfirmDialog,
     DataState,
+    DetailLayout,
     Dialog,
     Disclosure,
     EmptyState,
     ErrorMessage,
     Field,
+    Icon,
     Inline,
     Input,
     Menu,
@@ -31,6 +34,8 @@
     Radio,
     SegmentedControl,
     Select,
+    Sidebar,
+    SidebarSection,
     Skeleton,
     SkeletonText,
     Spinner,
@@ -47,7 +52,7 @@
     Toolbar,
     Tooltip,
   } from "../svelte/index.ts"
-  import { HL_BLOCK_HTML, HL_LINES, MARKDOWN_HTML, SNIPPET_LINES } from "./content.ts"
+  import { HL_BLOCK_HTML, HL_LINES, ICON_DEMO, MAKES, MARKDOWN_HTML, SITES, SNIPPET_LINES } from "./content.ts"
 
   let { id }: { id: string } = $props()
 
@@ -73,6 +78,9 @@
   let theme = $state("monokai")
   let page = $state(5)
   let bannerShown = $state(true)
+  let sites = $state(["ber", "muc"])
+  let makes = $state<string[]>([])
+  let site = $state(["ham"])
   const noop = () => undefined
 </script>
 
@@ -325,4 +333,29 @@
   <CodeSnippet lines={HL_LINES.map((runs) => runs.map(([, t]) => t).join(""))}>
     {#snippet line(_text, n)}{#each HL_LINES[n - 1] ?? [] as [cls, text], i (i)}{#if cls}<span class={cls}>{text}</span>{:else}{text}{/if}{/each}{/snippet}
   </CodeSnippet>
+{:else if id === "icons"}
+  <div class="gallery__icons">
+    {#each ICON_DEMO as name (name)}<span class="gallery__icon"><Icon {name} /><code>{name}</code></span>{/each}
+  </div>
+{:else if id === "icon-labelled"}
+  <Icon name="check-circle" label="Passed" class="gallery__ok" />
+  <Icon name="x-circle" label="Failed" size={24} class="gallery__bad" />
+  <a href="#later">Docs <Icon name="link-external" /></a>
+{:else if id === "check-dropdown"}
+  <CheckDropdown label="Site" options={SITES} bind:selected={sites} />
+{:else if id === "check-dropdown-single"}
+  <CheckDropdown label="Make" options={MAKES} bind:selected={makes} single />
+{:else if id === "check-dropdown-required"}
+  <CheckDropdown label="Site" options={SITES.slice(0, 3)} bind:selected={site} required />
+  <CheckDropdown label="Model" options={[]} disabled />
+{:else if id === "detail-layout"}
+  <DetailLayout class="gallery__fill">
+    <Card padded>Issue body goes here. The rail sits beside it, or below when the container is narrow.</Card>
+    {#snippet aside()}
+      <Sidebar label="Details">
+        <SidebarSection label="Assignees">Ada Lovelace</SidebarSection>
+        <SidebarSection label="Labels"><Badge tone="accent">ui</Badge></SidebarSection>
+      </Sidebar>
+    {/snippet}
+  </DetailLayout>
 {/if}

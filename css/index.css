@@ -27,3 +27,7 @@
 @import "./blocks/markdown.css";
 @import "./blocks/code.css";
 @import "./blocks/hljs.css";
+@import "./blocks/icon.css";
+@import "./blocks/check-dropdown.css";
+@import "./blocks/detail-layout.css";
+@import "./blocks/sidebar.css";

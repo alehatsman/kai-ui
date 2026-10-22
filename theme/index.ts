@@ -56,3 +56,5 @@ export function bootstrapSnippet(key: string, fallback: ThemeId = "auto"): strin
   const ids = JSON.stringify(THEMES)
   return `(function(){var t=${f};try{var s=localStorage.getItem(${k});if(${ids}.indexOf(s)>=0)t=s}catch(e){}if(t!=="auto")document.documentElement.setAttribute("data-theme",t)})();`
 }
+
+export { onThemeChange, type TerminalTheme, terminalTheme } from "./terminal.ts"

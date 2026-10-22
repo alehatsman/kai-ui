@@ -1,0 +1,153 @@
+/* check-dropdown — CheckDropdown: a select-looking trigger over a popover
+   panel of checkboxes (radios when --single). behavior/check-dropdown.ts
+   places the panel (position: fixed, top layer). */
+
+.check-dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.check-dropdown__label {
+  color: var(--fg);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+}
+
+.check-dropdown__button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  height: var(--control-h);
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+  font-size: var(--text-control);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.check-dropdown__button:hover:not(:disabled) {
+  border-color: var(--fg-muted);
+}
+
+.check-dropdown__button[aria-expanded="true"] {
+  border-color: var(--accent);
+}
+
+.check-dropdown__button:disabled {
+  background: var(--bg-canvas);
+  color: var(--fg-muted);
+  cursor: not-allowed;
+}
+
+.check-dropdown__summary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.check-dropdown__button > .icon {
+  color: var(--fg-muted);
+}
+
+.check-dropdown__panel {
+  position: fixed;
+  inset: auto;
+  max-width: min(24rem, calc(100vw - var(--space-4)));
+  margin: 0;
+  padding: var(--space-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  box-shadow: var(--shadow-md);
+  color: var(--fg);
+}
+
+.check-dropdown__fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.check-dropdown__search {
+  width: 100%;
+  height: var(--control-h-sm);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+  font-size: var(--text-control);
+}
+
+.check-dropdown__search:focus {
+  border-color: var(--accent);
+}
+
+.check-dropdown__list {
+  display: flex;
+  flex-direction: column;
+  max-height: 16rem;
+  overflow-y: auto;
+}
+
+.check-dropdown__option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-h-sm);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-md);
+  cursor: pointer;
+}
+
+.check-dropdown__option:hover {
+  background: var(--control-bg-hover);
+}
+
+.check-dropdown__input {
+  margin: 0;
+  accent-color: var(--accent-emphasis);
+}
+
+.check-dropdown__input:disabled {
+  cursor: not-allowed;
+}
+
+.check-dropdown__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.check-dropdown__count {
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.check-dropdown__none {
+  margin: 0;
+  padding: var(--space-1) var(--space-2);
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
+}
+
+.check-dropdown__clear {
+  align-self: flex-end;
+}

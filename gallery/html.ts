@@ -1,8 +1,25 @@
 // Layer 1 alone: each demo as hand-written markup, no binding. If a block
 // needs JS to look right, it shows here first.
 
-import { pageList } from "../contract/index.ts"
-import { CODE_BLOCK_HTML, HL_LINES, MARKDOWN_HTML, runsHtml, SNIPPET_LINES } from "./content.ts"
+import {
+  type CheckOption,
+  checkSummary,
+  countText,
+  type IconName,
+  iconSvg,
+  optionName,
+  pageList,
+} from "../contract/index.ts"
+import {
+  CODE_BLOCK_HTML,
+  HL_LINES,
+  ICON_DEMO,
+  MAKES,
+  MARKDOWN_HTML,
+  runsHtml,
+  SITES,
+  SNIPPET_LINES,
+} from "./content.ts"
 
 const TONES = ["neutral", "accent", "success", "warning", "danger", "done"] as const
 const mod = (block: string, tone: string) =>
@@ -35,6 +52,41 @@ const snippet = (lines: readonly string[], start: number, focus?: [number, numbe
       return `<tr class="${cls}"><td class="code-line__num" data-line="${n}"></td><td class="code-line__text">${text}</td></tr>`
     })
     .join("")}</tbody></table></div>`
+
+interface CheckDemo {
+  id: string
+  label: string
+  options: readonly CheckOption[]
+  selected: readonly string[]
+  single?: boolean
+  required?: boolean
+  disabled?: boolean
+}
+
+const checkOption = (d: CheckDemo, o: CheckOption, anyRow = false) => {
+  const on = anyRow ? d.selected.length === 0 : d.selected.includes(o.value)
+  const locked = !anyRow && d.required && on && d.selected.length === 1
+  const type = d.single ? "radio" : "checkbox"
+  const name = d.single ? ` name="${d.id}"` : ""
+  return `<label class="check-dropdown__option"><input type="${type}" class="check-dropdown__input"${name}${on ? " checked" : ""}${locked ? " disabled" : ""}><span class="check-dropdown__name">${anyRow ? "Any" : optionName(o)}</span><span class="check-dropdown__count">${anyRow ? "" : countText(o.count)}</span></label>`
+}
+
+const checkDropdown = (d: CheckDemo) => {
+  const search =
+    d.options.length >= 8
+      ? `<input type="search" class="check-dropdown__search" placeholder="Type to find…" aria-label="Find ${d.label}">`
+      : ""
+  const any = d.single ? checkOption(d, { value: "" }, true) : ""
+  const list = d.options.map((o) => checkOption(d, o)).join("")
+  const clear =
+    !(d.single || d.required) && d.selected.length > 0
+      ? `<button type="button" class="btn btn--ghost btn--small check-dropdown__clear">Clear</button>`
+      : ""
+  return `<div class="check-dropdown${d.single ? " check-dropdown--single" : ""}"><span class="check-dropdown__label" id="${d.id}-label">${d.label}</span><button type="button" class="check-dropdown__button" popovertarget="${d.id}-panel" aria-controls="${d.id}-panel" aria-expanded="false" aria-labelledby="${d.id}-label ${d.id}-summary"${d.disabled ? " disabled" : ""}><span class="check-dropdown__summary" id="${d.id}-summary">${checkSummary(d.selected, d.options)}</span>${iconSvg("triangle-down")}</button><div class="check-dropdown__panel" id="${d.id}-panel" popover="auto"><fieldset class="check-dropdown__fieldset"><legend class="sr-only">${d.label}</legend>${search}<div class="check-dropdown__list">${any}${list}</div>${clear}</fieldset></div></div>`
+}
+
+const iconTile = (name: IconName) =>
+  `<span class="gallery__icon">${iconSvg(name)}<code>${name}</code></span>`
 
 const chip = (label: string, count: number, checked: boolean) =>
   `<label class="chip"><input type="checkbox" class="chip__input"${checked ? " checked" : ""}><span class="chip__label">${label}</span><span class="chip__count">${count}</span></label>`
@@ -231,4 +283,25 @@ export const HTML_DEMOS: Record<string, string> = {
   "code-block": CODE_BLOCK_HTML,
   "code-snippet": snippet(SNIPPET_LINES.map(esc), 41, [43, 44]),
   "code-snippet-hl": snippet(HL_LINES.map(runsHtml), 1),
+  icons: `<div class="gallery__icons">${ICON_DEMO.map(iconTile).join("")}</div>`,
+  "icon-labelled": `
+    ${iconSvg("check-circle", { label: "Passed", className: "gallery__ok" })}
+    ${iconSvg("x-circle", { label: "Failed", size: 24, className: "gallery__bad" })}
+    <a href="#later">Docs ${iconSvg("link-external")}</a>`,
+  "check-dropdown": checkDropdown({
+    id: "h-cd",
+    label: "Site",
+    options: SITES,
+    selected: ["ber", "muc"],
+  }),
+  "check-dropdown-single": checkDropdown({
+    id: "h-cds",
+    label: "Make",
+    options: MAKES,
+    selected: [],
+    single: true,
+  }),
+  "check-dropdown-required": `${checkDropdown({ id: "h-cdr", label: "Site", options: SITES.slice(0, 3), selected: ["ham"], required: true })}${checkDropdown({ id: "h-cdd", label: "Model", options: [], selected: [], disabled: true })}`,
+  "detail-layout": `
+    <div class="detail-layout gallery__fill"><div class="detail-layout__main"><div class="card card--padded">Issue body goes here. The rail sits beside it, or below when the container is narrow.</div></div><aside class="sidebar" aria-label="Details"><section class="sidebar__section"><h3 class="sidebar__label">Assignees</h3>Ada Lovelace</section><section class="sidebar__section"><h3 class="sidebar__label">Labels</h3><span class="badge badge--accent">ui</span></section></aside></div>`,
 }

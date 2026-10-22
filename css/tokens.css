@@ -78,6 +78,24 @@
   --series-7: #6250d6;
   --series-8: #898781;
 
+  /* Terminal ANSI 16 — for xterm via terminalTheme(); no block reads them. */
+  --ansi-black: #24292f;
+  --ansi-red: #cf222e;
+  --ansi-green: #116329;
+  --ansi-yellow: #4d2d00;
+  --ansi-blue: #0969da;
+  --ansi-magenta: #8250df;
+  --ansi-cyan: #1b7c83;
+  --ansi-white: #6e7781;
+  --ansi-bright-black: #57606a;
+  --ansi-bright-red: #a40e26;
+  --ansi-bright-green: #1a7f37;
+  --ansi-bright-yellow: #633c01;
+  --ansi-bright-blue: #218bff;
+  --ansi-bright-magenta: #a475f9;
+  --ansi-bright-cyan: #3192aa;
+  --ansi-bright-white: #8c959f;
+
   /* Radius */
   --radius-sm: 4px;
   --radius: 6px;
@@ -184,6 +202,22 @@
     --series-6: #2ea043;
     --series-7: #9085e9;
     --series-8: #9a9890;
+    --ansi-black: #484f58;
+    --ansi-red: #ff7b72;
+    --ansi-green: #3fb950;
+    --ansi-yellow: #d29922;
+    --ansi-blue: #58a6ff;
+    --ansi-magenta: #bc8cff;
+    --ansi-cyan: #39c5cf;
+    --ansi-white: #b1bac4;
+    --ansi-bright-black: #6e7681;
+    --ansi-bright-red: #ffa198;
+    --ansi-bright-green: #56d364;
+    --ansi-bright-yellow: #e3b341;
+    --ansi-bright-blue: #79c0ff;
+    --ansi-bright-magenta: #d2a8ff;
+    --ansi-bright-cyan: #56d4dd;
+    --ansi-bright-white: #ffffff;
   }
 }
 
@@ -241,6 +275,22 @@
   --series-6: #2ea043;
   --series-7: #9085e9;
   --series-8: #9a9890;
+  --ansi-black: #484f58;
+  --ansi-red: #ff7b72;
+  --ansi-green: #3fb950;
+  --ansi-yellow: #d29922;
+  --ansi-blue: #58a6ff;
+  --ansi-magenta: #bc8cff;
+  --ansi-cyan: #39c5cf;
+  --ansi-white: #b1bac4;
+  --ansi-bright-black: #6e7681;
+  --ansi-bright-red: #ffa198;
+  --ansi-bright-green: #56d364;
+  --ansi-bright-yellow: #e3b341;
+  --ansi-bright-blue: #79c0ff;
+  --ansi-bright-magenta: #d2a8ff;
+  --ansi-bright-cyan: #56d4dd;
+  --ansi-bright-white: #ffffff;
 }
 
 /* Monokai — chrome and code. Canonical bg #272822; accents from the ST2
@@ -295,6 +345,22 @@
   --series-6: #e6db74;
   --series-7: #a1efe4;
   --series-8: #75715e;
+  --ansi-black: #272822;
+  --ansi-red: #f92672;
+  --ansi-green: #a6e22e;
+  --ansi-yellow: #f4bf75;
+  --ansi-blue: #66d9ef;
+  --ansi-magenta: #ae81ff;
+  --ansi-cyan: #a1efe4;
+  --ansi-white: #f8f8f2;
+  --ansi-bright-black: #75715e;
+  --ansi-bright-red: #ff6188;
+  --ansi-bright-green: #b6ec4a;
+  --ansi-bright-yellow: #ffd866;
+  --ansi-bright-blue: #78dce8;
+  --ansi-bright-magenta: #c39dff;
+  --ansi-bright-cyan: #b3f5ec;
+  --ansi-bright-white: #f9f8f5;
 }
 
 /* Touch density: 44px targets, 16px control text (no iOS focus zoom). */

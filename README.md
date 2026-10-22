@@ -36,7 +36,8 @@ Button · Input · Select · Textarea · Field · Checkbox · Radio · Switch ·
 SegmentedControl · Chip · Badge · StatusDot · Avatar · Card · Table · Stack ·
 Inline · Toolbar · PageHeader · Tabs · Pagination · EmptyState · ErrorMessage ·
 Banner · Spinner · Skeleton · DataState · Disclosure · Dialog · ConfirmDialog ·
-Menu · Tooltip · ToastStack · CodeSnippet. All of them live in the gallery.
+Menu · Tooltip · ToastStack · CodeSnippet · CheckDropdown · Icon · DetailLayout ·
+Sidebar. All of them live in the gallery.
 
 ### Content
 
@@ -45,6 +46,13 @@ Keep your renderer and highlighter, put kai-ui classes on their output:
 `<div class="markdown-body">` around rendered markdown, `<pre class="code-block">`
 for fenced code. highlight.js / lowlight `hljs-*` scopes take the theme's
 `--hl-*` colours with no extra stylesheet.
+
+### Icons and terminal
+
+`Icon name="check"` — 57 Octicons (MIT), `fill="currentColor"`; `iconSvg(name)`
+from `kai-ui/contract` for plain HTML. For xterm.js:
+`new Terminal({ theme: terminalTheme() })`, re-apply inside `onThemeChange(…)`
+(both from `kai-ui/theme`).
 
 ### Themes
 

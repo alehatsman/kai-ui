@@ -1,0 +1,7 @@
+/* icon — Icon: an inline Octicon, coloured by currentColor. */
+
+.icon {
+  display: inline-block;
+  flex: none;
+  vertical-align: text-bottom;
+}

@@ -9,15 +9,18 @@ import {
   buttonClass,
   Card,
   Checkbox,
+  CheckDropdown,
   Chip,
   CodeSnippet,
   ConfirmDialog,
   DataState,
+  DetailLayout,
   Dialog,
   Disclosure,
   EmptyState,
   ErrorMessage,
   Field,
+  Icon,
   Inline,
   Input,
   Menu,
@@ -26,6 +29,8 @@ import {
   Radio,
   SegmentedControl,
   Select,
+  Sidebar,
+  SidebarSection,
   Skeleton,
   SkeletonText,
   Spinner,
@@ -42,7 +47,16 @@ import {
   Toolbar,
   Tooltip,
 } from "../react/index.ts"
-import { HL_BLOCK_HTML, HL_LINES, MARKDOWN_HTML, type Run, SNIPPET_LINES } from "./content.ts"
+import {
+  HL_BLOCK_HTML,
+  HL_LINES,
+  ICON_DEMO,
+  MAKES,
+  MARKDOWN_HTML,
+  type Run,
+  SITES,
+  SNIPPET_LINES,
+} from "./content.ts"
 
 const TONES: Tone[] = ["neutral", "accent", "success", "warning", "danger", "done"]
 const RANGES = [
@@ -469,8 +483,80 @@ const DEMOS: Record<string, () => ReactNode> = {
       <code dangerouslySetInnerHTML={{ __html: HL_BLOCK_HTML }} />
     </pre>
   ),
+  icons: () => (
+    <div className="gallery__icons">
+      {ICON_DEMO.map((name) => (
+        <span key={name} className="gallery__icon">
+          <Icon name={name} />
+          <code>{name}</code>
+        </span>
+      ))}
+    </div>
+  ),
+  "icon-labelled": () => (
+    <>
+      <Icon name="check-circle" label="Passed" className="gallery__ok" />
+      <Icon name="x-circle" label="Failed" size={24} className="gallery__bad" />
+      <a href="#later">
+        Docs <Icon name="link-external" />
+      </a>
+    </>
+  ),
+  "check-dropdown": () => <Sites initial={["ber", "muc"]} />,
+  "check-dropdown-single": () => <Makes />,
+  "check-dropdown-required": () => (
+    <>
+      <Sites initial={["ham"]} options={SITES.slice(0, 3)} required />
+      <CheckDropdown label="Model" options={[]} selected={[]} onChange={() => undefined} disabled />
+    </>
+  ),
+  "detail-layout": () => (
+    <DetailLayout
+      className="gallery__fill"
+      aside={
+        <Sidebar label="Details">
+          <SidebarSection label="Assignees">Ada Lovelace</SidebarSection>
+          <SidebarSection label="Labels">
+            <Badge tone="accent">ui</Badge>
+          </SidebarSection>
+        </Sidebar>
+      }
+    >
+      <Card padded>
+        Issue body goes here. The rail sits beside it, or below when the container is narrow.
+      </Card>
+    </DetailLayout>
+  ),
   "code-snippet": () => <CodeSnippet lines={SNIPPET_LINES} startLine={41} focus={[43, 44]} />,
   "code-snippet-hl": () => <CodeSnippet lines={HL_LINES.map(runNodes)} />,
+}
+
+function Sites({
+  initial,
+  options = SITES,
+  required = false,
+}: {
+  initial: string[]
+  options?: typeof SITES
+  required?: boolean
+}) {
+  const [selected, setSelected] = useState(initial)
+  return (
+    <CheckDropdown
+      label="Site"
+      options={options}
+      selected={selected}
+      onChange={setSelected}
+      required={required}
+    />
+  )
+}
+
+function Makes() {
+  const [selected, setSelected] = useState<string[]>([])
+  return (
+    <CheckDropdown label="Make" options={MAKES} selected={selected} onChange={setSelected} single />
+  )
 }
 
 /** A line's runs as nodes, keyed by character offset. */

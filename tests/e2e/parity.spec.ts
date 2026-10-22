@@ -4,7 +4,7 @@ import { DEMO_IDS, openGallery } from "./gallery.ts"
 // Layer 1 is the contract: for every demo, the React and Svelte bindings must
 // produce the same DOM as the hand-written HTML. Compared per element: tag,
 // attributes, own text, live checked/value. Generated ids differ by framework,
-// so id/for/aria-describedby/popovertarget/aria-controls are renamed in order
+// so id/for/aria-describedby/aria-labelledby/popovertarget/aria-controls are renamed in order
 // of first appearance; radio
 // `name` differs per cell so the three groups stay independent.
 
@@ -55,7 +55,8 @@ function collectTrees(): Record<string, Record<Fw, Node[]>> {
     if (SKIP.has(a.name)) return null
     if (a.name === "class") return el.classList.length ? [...el.classList].sort().join(" ") : null
     if (["id", "for", "popovertarget", "aria-controls"].includes(a.name)) return ref(a.value)
-    if (a.name === "aria-describedby") return a.value.split(/\s+/).map(ref).join(" ")
+    if (a.name === "aria-describedby" || a.name === "aria-labelledby")
+      return a.value.split(/\s+/).map(ref).join(" ")
     if (a.name === "name" && el instanceof HTMLInputElement && el.type === "radio") return "group"
     return a.value
   }

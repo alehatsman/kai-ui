@@ -81,3 +81,49 @@ export const MARKDOWN_HTML = `<h1>Release notes</h1>
 <pre><code class="hljs">${HL_BLOCK_HTML}</code></pre>
 <hr>
 <p>Diff scopes: <span class="hljs-addition">+ added</span> <span class="hljs-deletion">- removed</span></p>`
+
+/** CheckDropdown samples. */
+export const SITES = [
+  ["ber", "Berlin", 1204],
+  ["ham", "Hamburg", 830],
+  ["muc", "Munich", 977],
+  ["cgn", "Cologne", 412],
+  ["fra", "Frankfurt", 655],
+  ["str", "Stuttgart", 301],
+  ["dus", "Düsseldorf", 288],
+  ["lej", "Leipzig", 150],
+  ["dtm", "Dortmund", 97],
+  ["ess", "Essen", 0],
+].map(([value, label, count]) => ({ value, label, count })) as {
+  value: string
+  label: string
+  count: number
+}[]
+
+export const MAKES = ["Audi", "BMW", "Ford", "Opel"].map((m) => ({
+  value: m.toLowerCase(),
+  label: m,
+}))
+
+export const ICON_DEMO = [
+  "check",
+  "x",
+  "plus",
+  "search",
+  "gear",
+  "copy",
+  "trash",
+  "pencil",
+  "kebab-horizontal",
+  "sync",
+  "chevron-down",
+  "link-external",
+  "git-branch",
+  "git-merge",
+  "git-pull-request",
+  "issue-opened",
+  "check-circle",
+  "x-circle",
+  "clock",
+  "terminal",
+] as const

@@ -56,6 +56,24 @@ export const TOKENS = {
     "--series-7",
     "--series-8",
   ],
+  ansi: [
+    "--ansi-black",
+    "--ansi-red",
+    "--ansi-green",
+    "--ansi-yellow",
+    "--ansi-blue",
+    "--ansi-magenta",
+    "--ansi-cyan",
+    "--ansi-white",
+    "--ansi-bright-black",
+    "--ansi-bright-red",
+    "--ansi-bright-green",
+    "--ansi-bright-yellow",
+    "--ansi-bright-blue",
+    "--ansi-bright-magenta",
+    "--ansi-bright-cyan",
+    "--ansi-bright-white",
+  ],
   radius: ["--radius-sm", "--radius", "--radius-lg", "--radius-pill", "--radius-circle"],
   space: ["--space-1", "--space-2", "--space-3", "--space-4", "--space-5", "--space-6"],
   font: ["--font-sans", "--font-mono"],
@@ -100,6 +118,7 @@ export const THEMED: readonly TokenName[] = [
   ...TOKENS.elevation,
   ...TOKENS.code,
   ...TOKENS.series,
+  ...TOKENS.ansi,
 ]
 
 export const ALL_TOKENS: readonly TokenName[] = Object.values(TOKENS).flat()
