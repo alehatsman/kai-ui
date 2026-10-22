@@ -310,6 +310,46 @@ might collide.
 3. Migrate: autolab → codefort → money → teleport. One PR per app.
 4. v0.2, then reassess "later" list.
 
+### 10.1 Money adoption (2026-10-22)
+
+Decisions (user): money renders **Monokai** (`data-theme="monokai"` static on
+`<html>`, no switcher); start while lane P11 runs, branch `feat/kai-ui`;
+dependency `github:alehatsman/kai-ui#v0.4.0`.
+
+Phase 1 — mechanical, this branch. Look changes, structure does not.
+- `app.css`: drop money's tokens, reset, focus, reduced motion, sr-only and the
+  four shared blocks; `@import "kai-ui/css"` first. Keep money-local tokens
+  `--grid-row`, `--grid-gap`, `--content-max-width`.
+- Token renames in every `<style>` and TS reader:
+
+| money | kai-ui | | money | kai-ui |
+|---|---|---|---|---|
+| `--page` | `--bg` | | `--s1…s7` | `--series-1…7` |
+| `--surface` | `--bg-card` | | `--s0` | `--series-8` |
+| `--surface-sunk` | `--bg-canvas` | | `--good(-bg)` | `--tone-success(-bg)` |
+| `--ink` | `--fg` | | `--warning(-bg)` | `--tone-warning(-bg)` |
+| `--ink-2`, `--muted` | `--fg-muted` | | `--critical(-bg)` | `--tone-danger(-bg)` |
+| `--grid`, `--border` | `--border-muted` | | `--on-primary` | `--fg-on-emphasis` |
+| `--border-strong` | `--border` | | `--radius-md` | `--radius-lg` |
+| `--space-6` (24px) | `--space-5` | | `--transition-fast` (120ms) | `--transition` |
+
+- Class renames: `badge--ok/warn/critical` → `badge--success/warning/danger`;
+  `dot--ok/warn` → `dot--success/warning`; `banner--error` → `banner--danger`;
+  `btn--link` → `btn--ghost btn--small`. `HealthBadge.tone` becomes kai-ui `Tone`.
+- Element styling money had on bare `select` → `.select` / `.input` classes.
+- TablePanel's own `.data-table` collided with kai-ui's: it becomes
+  `table-panel` (scroll box, sticky head, sort button) around kai-ui
+  `data-table` / `__head(--num)` / `__cell(--num)`.
+- Terminal: `terminalTheme()` + `onThemeChange()` from `kai-ui/theme`.
+  Plot: `paletteFrom` reads `--series-*`, `--fg`, `--fg-muted`.
+- `web/CLAUDE.md`: "no component library" → kai-ui; the block table points at kai-ui.
+
+Phase 2 — later, own branch: NewDashboard / PanelEditor → `Dialog` + `Field`,
+TopBar selects → `Select`, live dot → `StatusDot`, ChatPane alert → `Banner`.
+
+Validation: money's gate (`just web-gate`: biome, svelte-check, vitest, ui-lint),
+`just web-e2e` (desktop + 375px), screenshots under fixtures.
+
 ## 11. v0.1 as built
 
 - Gallery: `npm run dev`. Toolbar: theme, view (all / HTML / React / Svelte), touch density.
